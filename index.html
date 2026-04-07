@@ -244,9 +244,14 @@
         <input type="range" id="filter-speed" min="0" max="100" value="0" oninput="document.getElementById('spd-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="spd-val">0</span>
       </div>
-      <label>Dureza máx. (°ESN normalizado)</label>
+      <label>Dureza mínima (°ESN)</label>
       <div class="range-row">
-        <input type="range" id="filter-hard" min="38" max="65" value="65" oninput="document.getElementById('hrd-val').textContent=this.value;applyFilters()">
+        <input type="range" id="filter-hard-min" min="25" max="65" value="25" oninput="document.getElementById('hrd-min-val').textContent=this.value;applyFilters()">
+        <span class="range-val" id="hrd-min-val">25</span>
+      </div>
+      <label>Dureza máxima (°ESN)</label>
+      <div class="range-row">
+        <input type="range" id="filter-hard" min="25" max="65" value="65" oninput="document.getElementById('hrd-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="hrd-val">65</span>
       </div>
       <label>Nivel recomendado</label>
@@ -735,6 +740,7 @@ function applyFilters() {
     const cat = document.getElementById('filter-cat').value;
     const brand = document.getElementById('filter-brand').value;
     const minSpeed = +document.getElementById('filter-speed').value;
+    const minHard = +document.getElementById('filter-hard-min').value;
     const maxHard = +document.getElementById('filter-hard').value;
     const nivel = document.getElementById('filter-nivel').value;
     items = RUBBERS.filter(r => {
@@ -743,7 +749,8 @@ function applyFilters() {
       if (cat && r.cat !== cat) return false;
       if (brand && r.brand !== brand) return false;
       if (r.speed < minSpeed) return false;
-      if (toESN(r.hardness, r.hardScale) > maxHard) return false;
+      const hardESN = toESN(r.hardness, r.hardScale);
+      if (hardESN < minHard || hardESN > maxHard) return false;
       if (nivel && r.nivel !== nivel) return false;
       if (showOnlyRated && !userRatings[r.id]) return false;
       return true;
@@ -785,6 +792,7 @@ function resetFilters() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('filter-speed').value = 0; document.getElementById('spd-val').textContent = '0';
+  document.getElementById('filter-hard-min').value = 25; document.getElementById('hrd-min-val').textContent = '25';
   document.getElementById('filter-hard').value = 65; document.getElementById('hrd-val').textContent = '65';
   document.getElementById('filter-blade-speed').value = 0; document.getElementById('bspd-val').textContent = '0';
   applyFilters();
