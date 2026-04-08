@@ -2,13 +2,15 @@
 export const THICKNESS_OPTS = ['1.5','1.7','1.8','1.9','2.0','2.1','2.2','2.3','Max'];
 
 // ─── NORMALIZACIÓN DE DUREZA ──────────────────────────────────────────────────
-// Butterfly (°J) y DHS (°C) usan Shore A.
-// Fabricantes europeos (Andro, Tibhar, JOOLA, Yasaka, Donic, Stiga, Victas…)
-// usan Shore O (= °ESN).
+// Solo Butterfly (°J) y DHS/Sanwei (°C) necesitan conversión (usan Shore A).
+// Fabricantes europeos (Andro, Tibhar, JOOLA, Yasaka, Donic, Stiga, Victas, Xiom…)
+// ya usan Shore O (= °ESN) directamente.
 // Tabla de conversión empírica: Shore A → Shore O
 // Fuente: r/tabletennis, TTGearLab, MyTableTennis forum.
 export function toESN(h, scale) {
-  if (!scale || scale.includes('ESN')) return h;
+  // Solo convertir si es escala japonesa (°J) o china (°C)
+  const needsConversion = scale && (scale.startsWith('°J') || scale.startsWith('°C'));
+  if (!needsConversion) return h;
   const lut = {33:43,34:44,35:46,36:47,37:48,38:50,39:52,40:53,41:54,42:55,43:56,44:58,45:60};
   return lut[h] ?? (h >= 45 ? h + 15 : h + 11);
 }
@@ -16,7 +18,8 @@ export function toESN(h, scale) {
 export function hardnessLabel(item) {
   const esn = toESN(item.hardness, item.hardScale);
   const orig = `${item.hardness}${item.hardScale}`;
-  if (item.hardScale && !item.hardScale.includes('ESN')) {
+  const needsConversion = item.hardScale && (item.hardScale.startsWith('°J') || item.hardScale.startsWith('°C'));
+  if (needsConversion) {
     return `${orig} <span style="color:var(--text-dim);font-weight:400">≈ ${esn}°ESN</span>`;
   }
   return orig;
