@@ -1,203 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TT Equipment Database — Gomas & Maderas</title>
-<style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2e3350;
-    --accent: #4f8ef7;
-    --accent2: #f75d5d;
-    --accent3: #4fd17a;
-    --text: #e8eaf6;
-    --text-dim: #7b82a8;
-    --star: #f5c518;
-    --tag-off: #1e3a5f;
-    --tag-all: #1e4a2e;
-    --tag-def: #3d2020;
-    --tag-off-text: #6ab0f5;
-    --tag-all-text: #4fd17a;
-    --tag-def-text: #f57070;
-    --radius: 10px;
-    --shadow: 0 4px 20px rgba(0,0,0,0.4);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-
-  /* HEADER */
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; }
-  header h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; }
-  header h1 span { color: var(--accent); }
-  .header-tabs { display: flex; gap: 4px; margin-left: auto; }
-  .tab-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
-  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .tab-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
-
-  /* LAYOUT */
-  .app { display: flex; height: calc(100vh - 57px); }
-  .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-  .main { flex: 1; overflow-y: auto; padding: 20px; }
-
-  /* SIDEBAR */
-  .sidebar-section { display: flex; flex-direction: column; gap: 8px; }
-  .sidebar-section label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
-  input[type=text], select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: var(--radius); font-size: 0.9rem; width: 100%; outline: none; }
-  input[type=text]:focus, select:focus { border-color: var(--accent); }
-  .range-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-dim); }
-  input[type=range] { flex: 1; accent-color: var(--accent); }
-  .range-val { min-width: 24px; text-align: right; color: var(--text); }
-
-  .btn { padding: 8px 14px; border-radius: var(--radius); border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #3a7aee; }
-  .btn-danger { background: var(--accent2); color: #fff; }
-  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
-  .btn-outline:hover { border-color: var(--accent); color: var(--text); }
-  .btn-sm { padding: 4px 10px; font-size: 0.78rem; }
-  .btn-compare { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); }
-  .btn-compare.active { background: #1e3a5f; border-color: var(--accent); color: var(--accent); }
-
-  /* COMPARE BAR */
-  #compare-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface2); border-top: 2px solid var(--accent); padding: 10px 24px; display: none; align-items: center; gap: 12px; z-index: 200; }
-  #compare-bar.visible { display: flex; }
-  #compare-bar h3 { font-size: 0.9rem; color: var(--accent); }
-  .compare-names { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
-  .compare-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
-  .compare-chip button { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem; line-height: 1; }
-  .compare-chip button:hover { color: var(--accent2); }
-
-  /* CARDS GRID */
-  .results-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-  .results-count { color: var(--text-dim); font-size: 0.9rem; }
-  .sort-select { margin-left: auto; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: var(--radius); font-size: 0.85rem; outline: none; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-
-  /* CARD */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; }
-  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card.in-compare { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79,142,247,0.3); }
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .card-brand { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
-  .card-name { font-size: 1rem; font-weight: 700; margin: 2px 0 6px; }
-  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-  .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-  .tag-off { background: var(--tag-off); color: var(--tag-off-text); }
-  .tag-all { background: var(--tag-all); color: var(--tag-all-text); }
-  .tag-def { background: var(--tag-def); color: var(--tag-def-text); }
-  .tag-mat { background: #2a2040; color: #b39ddb; }
-  .tag-cat { background: #1a2a1a; color: #80cbc4; }
-
-  .stat-bars { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-  .stat-row { display: flex; align-items: center; gap: 8px; }
-  .stat-label { font-size: 0.7rem; color: var(--text-dim); width: 60px; flex-shrink: 0; }
-  .stat-bar-bg { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .stat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-  .fill-speed { background: linear-gradient(90deg, #4f8ef7, #a78bfa); }
-  .fill-spin { background: linear-gradient(90deg, #4fd17a, #34d399); }
-  .fill-control { background: linear-gradient(90deg, #f5c518, #fbbf24); }
-  .stat-num { font-size: 0.75rem; color: var(--text); width: 28px; text-align: right; }
-
-  .card-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 2px; }
-  .card-price { font-size: 0.85rem; color: var(--accent3); font-weight: 600; }
-  .card-hardness { font-size: 0.78rem; color: var(--text-dim); }
-  .card-rating { display: flex; gap: 2px; }
-  .star { color: var(--star); font-size: 0.9rem; }
-  .star.empty { color: var(--border); }
-  .card-actions { display: flex; gap: 6px; margin-top: 10px; }
-  .card-note-preview { font-size: 0.75rem; color: var(--text-dim); margin-top: 6px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px; box-shadow: var(--shadow); }
-  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-  .modal-title-area .modal-brand { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
-  .modal-title-area h2 { font-size: 1.4rem; font-weight: 800; margin: 4px 0; }
-  .modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .modal-close:hover { border-color: var(--accent2); color: var(--accent2); }
-
-  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px; }
-  .spec-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 12px; }
-  .spec-table { display: flex; flex-direction: column; gap: 8px; }
-  .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface2); border-radius: 6px; }
-  .spec-key { font-size: 0.8rem; color: var(--text-dim); }
-  .spec-val { font-size: 0.85rem; font-weight: 600; }
-
-  .stat-bars-big { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-  .stat-row-big { display: flex; align-items: center; gap: 10px; }
-  .stat-label-big { font-size: 0.8rem; color: var(--text-dim); width: 70px; }
-  .stat-bar-bg-big { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-  .stat-bar-fill-big { height: 100%; border-radius: 4px; }
-  .stat-num-big { font-size: 0.85rem; font-weight: 700; width: 36px; text-align: right; }
-
-  .rating-section { margin-bottom: 20px; }
-  .rating-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 10px; }
-  .stars-input { display: flex; gap: 6px; margin-bottom: 12px; }
-  .star-btn { background: none; border: none; font-size: 1.6rem; cursor: pointer; transition: transform 0.1s; }
-  .star-btn:hover { transform: scale(1.2); }
-  textarea { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: var(--radius); font-size: 0.9rem; width: 100%; height: 90px; resize: vertical; outline: none; font-family: inherit; }
-  textarea:focus { border-color: var(--accent); }
-  .modal-save-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-
-  /* COMPARE VIEW */
-  #compare-view { display: none; padding: 20px; }
-  #compare-view.active { display: block; }
-  .compare-table-wrap { overflow-x: auto; }
-  .compare-table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
-  .compare-table th, .compare-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-  .compare-table th { background: var(--surface2); color: var(--text-dim); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
-  .compare-table td:first-child { color: var(--text-dim); font-size: 0.78rem; }
-  .compare-table tr:last-child td { border-bottom: none; }
-  .compare-table .prod-name-col { font-weight: 700; color: var(--text); }
-  .compare-bar-cell { display: flex; align-items: center; gap: 8px; }
-  .compare-bar-cell .bar { height: 6px; background: var(--accent); border-radius: 3px; }
-  .best-val { color: var(--accent3); font-weight: 700; }
-
-  /* NO RESULTS */
-  .no-results { text-align: center; padding: 60px 20px; color: var(--text-dim); }
-  .no-results span { font-size: 3rem; display: block; margin-bottom: 12px; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-
-  @media (max-width: 700px) {
-    .app { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; max-height: 300px; }
-    .modal-grid { grid-template-columns: 1fr; }
-  }
-
-  /* SETUPS */
-  #setups-view { display: none; flex: 1; overflow-y: auto; padding: 20px; }
-  #setups-view.active { display: block; }
-  .setup-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-  .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; transition: border-color 0.2s; }
-  .setup-card:hover { border-color: var(--accent); }
-  .setup-card-title { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
-  .setup-card-date { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 12px; }
-  .setup-parts { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .setup-part { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
-  .setup-part-label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; width: 72px; flex-shrink: 0; }
-  .setup-part-val { font-weight: 600; }
-  .setup-part-badge { font-size: 0.68rem; padding: 1px 7px; border-radius: 8px; font-weight: 600; }
-  .badge-red { background: #3d1a1a; color: #f87171; }
-  .badge-black { background: #1a1a1a; color: #94a3b8; border: 1px solid #333; }
-  .setup-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 10px; }
-  .setup-actions { display: flex; gap: 6px; }
-  .setup-note-preview { font-size: 0.75rem; color: var(--text-dim); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; margin-top: 6px; }
-  .setup-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
-  .form-group select, .form-group input[type=text] { width: 100%; }
-  .form-group datalist { display: none; }
-  @media (max-width: 700px) { .setup-modal-grid { grid-template-columns: 1fr; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TT Equipment Database — Gomas & Maderas</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
@@ -205,19 +12,22 @@
   <h1>TT <span>Equipment</span> DB</h1>
   <div class="header-tabs">
     <button class="tab-btn active" id="tab-rubbers" onclick="switchTab('rubbers')">Gomas</button>
-    <button class="tab-btn" id="tab-blades" onclick="switchTab('blades')">Maderas</button>
+    <button class="tab-btn" id="tab-blades"  onclick="switchTab('blades')">Maderas</button>
     <button class="tab-btn" id="tab-compare" onclick="switchTab('compare')">Comparar (<span id="compare-count">0</span>)</button>
-    <button class="tab-btn" id="tab-setups" onclick="switchTab('setups')">Mis setups</button>
+    <button class="tab-btn" id="tab-setups"  onclick="switchTab('setups')">Mis setups</button>
   </div>
 </header>
 
 <div class="app">
+
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-section">
       <label>Buscar</label>
       <input type="text" id="search" placeholder="Nombre, marca…" oninput="applyFilters()">
     </div>
+
+    <!-- Filtros: Gomas -->
     <div class="sidebar-section" id="rubber-filters">
       <label>Tipo</label>
       <select id="filter-type" onchange="applyFilters()">
@@ -241,17 +51,20 @@
       </select>
       <label>Velocidad mínima</label>
       <div class="range-row">
-        <input type="range" id="filter-speed" min="0" max="100" value="0" oninput="document.getElementById('spd-val').textContent=this.value;applyFilters()">
+        <input type="range" id="filter-speed" min="0" max="100" value="0"
+               oninput="document.getElementById('spd-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="spd-val">0</span>
       </div>
       <label>Dureza mínima (°ESN)</label>
       <div class="range-row">
-        <input type="range" id="filter-hard-min" min="25" max="65" value="25" oninput="document.getElementById('hrd-min-val').textContent=this.value;applyFilters()">
+        <input type="range" id="filter-hard-min" min="25" max="65" value="25"
+               oninput="document.getElementById('hrd-min-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="hrd-min-val">25</span>
       </div>
       <label>Dureza máxima (°ESN)</label>
       <div class="range-row">
-        <input type="range" id="filter-hard" min="25" max="65" value="65" oninput="document.getElementById('hrd-val').textContent=this.value;applyFilters()">
+        <input type="range" id="filter-hard" min="25" max="65" value="65"
+               oninput="document.getElementById('hrd-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="hrd-val">65</span>
       </div>
       <label>Nivel recomendado</label>
@@ -263,6 +76,8 @@
         <option value="Profesional">Profesional</option>
       </select>
     </div>
+
+    <!-- Filtros: Maderas -->
     <div class="sidebar-section" id="blade-filters" style="display:none">
       <label>Categoría</label>
       <select id="filter-blade-cat" onchange="applyFilters()">
@@ -291,7 +106,8 @@
       </select>
       <label>Velocidad mínima</label>
       <div class="range-row">
-        <input type="range" id="filter-blade-speed" min="0" max="100" value="0" oninput="document.getElementById('bspd-val').textContent=this.value;applyFilters()">
+        <input type="range" id="filter-blade-speed" min="0" max="100" value="0"
+               oninput="document.getElementById('bspd-val').textContent=this.value;applyFilters()">
         <span class="range-val" id="bspd-val">0</span>
       </div>
       <label>Nivel recomendado</label>
@@ -303,6 +119,7 @@
         <option value="Profesional">Profesional</option>
       </select>
     </div>
+
     <div class="sidebar-section">
       <button class="btn btn-outline btn-sm" onclick="resetFilters()">Limpiar filtros</button>
     </div>
@@ -312,7 +129,7 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN: Grid de tarjetas -->
   <main class="main" id="main-view">
     <div class="results-header">
       <span class="results-count" id="results-count"></span>
@@ -332,7 +149,9 @@
   <div id="compare-view">
     <h2 style="margin-bottom:20px;font-size:1.2rem">Comparativa</h2>
     <div class="compare-table-wrap" id="compare-table-wrap"></div>
-    <p id="compare-hint" style="color:var(--text-dim);margin-top:40px;text-align:center;display:none">Selecciona equipamiento con el botón ⊕ en las tarjetas para comparar aquí.</p>
+    <p id="compare-hint" style="color:var(--text-dim);margin-top:40px;text-align:center;display:none">
+      Selecciona equipamiento con el botón ⊕ en las tarjetas para comparar aquí.
+    </p>
   </div>
 
   <!-- SETUPS VIEW -->
@@ -345,12 +164,15 @@
     <div id="setups-empty" style="text-align:center;padding:60px 20px;color:var(--text-dim);display:none">
       <span style="font-size:3rem;display:block;margin-bottom:12px">🏓</span>
       <p>Aún no tienes setups guardados.</p>
-      <button class="btn btn-primary" style="margin-top:16px" onclick="openSetupModal(null)">Añadir mi primer setup</button>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="openSetupModal(null)">
+        Añadir mi primer setup
+      </button>
     </div>
   </div>
-</div>
 
-<!-- COMPARE BAR -->
+</div><!-- /.app -->
+
+<!-- COMPARE BAR (fija, abajo) -->
 <div id="compare-bar">
   <h3>Comparando:</h3>
   <div class="compare-names" id="compare-chips"></div>
@@ -368,894 +190,6 @@
   <div class="modal" style="max-width:680px" id="setup-modal-content"></div>
 </div>
 
-<script>
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-const RUBBERS = [
-  // ── BUTTERFLY ──────────────────────────────────────────────────────────────
-  // Dureza en escala japonesa (°J). Tenergy: 36°J ≈ 47°ESN. Dignics: 40°J ≈ 50°ESN, 44°J ≈ 54°ESN
-  {id:'r001', brand:'Butterfly', name:'Tenergy 05', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:92, spin:91, control:57, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Estándar no-tácky de la industria durante 15 años. Esponja Spring Sponge original. Muy popular en EHF/WTT.'},
-  {id:'r002', brand:'Butterfly', name:'Tenergy 05 Hard', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:93, spin:91, control:52, hardness:41, hardScale:'°J (≈51°ESN)', thickness:['1.9','2.1','Max'], price:65, color:'red/black', note:'Versión más dura del T05. Trayectoria más plana, más directa. Requiere técnica consolidada.'},
-  {id:'r003', brand:'Butterfly', name:'Tenergy 64', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:95, spin:83, control:54, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Máxima velocidad de la serie Tenergy. Poca topsheet friction — ideal para golpes planos y contraataques.'},
-  {id:'r004', brand:'Butterfly', name:'Tenergy 80', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:93, spin:87, control:61, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Balance entre T05 (spin) y T64 (velocidad). Muy popular como reverso. Recomendado por la comunidad r/tabletennis.'},
-  {id:'r005', brand:'Butterfly', name:'Tenergy 25', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:91, control:60, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Pips cortos especiales. Arco muy pronunciado. Excepcional para brushes lentos y sidespin.'},
-  {id:'r006', brand:'Butterfly', name:'Dignics 05', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:94, spin:94, control:56, hardness:40, hardScale:'°J (≈50°ESN)', thickness:['1.9','2.1','Max'], price:80, color:'red/black', note:'Spring Sponge X — más elástico que T05. Velocidad oficial Butterfly: 86, Spin: 85, Arco: 88. Mejor spin del mercado ESN junto a DNA Dragon Grip.'},
-  {id:'r007', brand:'Butterfly', name:'Dignics 09C', type:'Ofensiva', cat:'Híbrida', nivel:'Profesional', speed:88, spin:97, control:64, hardness:44, hardScale:'°J (≈54°ESN)', thickness:['1.9','2.1','Max'], price:80, color:'red/black', note:'Topsheet semi-tácky + Spring Sponge X 44°J. Velocidad Butterfly: 83. El único híbrido de Butterfly. Favorito de Harimoto. Control excepcional vs su velocidad.'},
-  {id:'r008', brand:'Butterfly', name:'Dignics 64', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:97, spin:87, control:50, hardness:40, hardScale:'°J (≈50°ESN)', thickness:['1.9','2.1','Max'], price:80, color:'red/black', note:'La más rápida de la gama Dignics. Trayectoria plana y muy directa. Exige técnica de élite.'},
-  {id:'r009', brand:'Butterfly', name:'Dignics 80', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:95, spin:90, control:56, hardness:40, hardScale:'°J (≈50°ESN)', thickness:['1.9','2.1','Max'], price:80, color:'red/black', note:'Balance entre D05 y D64. Arco medio-bajo. Muy usada como reverso por los pros europeos.'},
-  {id:'r010', brand:'Butterfly', name:'Rozena', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:78, spin:82, control:73, hardness:35, hardScale:'°J (≈45°ESN)', thickness:['1.8','2.0','Max'], price:42, color:'red/black', note:'Usa tecnología Spring Sponge a precio asequible. La goma de entrada recomendada por r/tabletennis para empezar con Butterfly.'},
-  {id:'r061', brand:'Butterfly', name:'Tenergy 05 FX', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:85, spin:88, control:68, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'FX = Flexible Sponge. Misma topsheet que T05 pero esponja Spring Sponge FX de estructura más abierta. Más control y arco más pronunciado, menor velocidad que T05. Muy recomendada en r/tabletennis como primera Tenergy o para reverso. La favorita para jugadores de nivel intermedio-avanzado en transición.'},
-  {id:'r061b', brand:'Butterfly', name:'Tenergy 19', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:93, control:58, hardness:36, hardScale:'°J (≈47°ESN)', thickness:['1.9','2.1','Max'], price:65, color:'red/black', note:'Pips de geometría nueva (1.9mm alta × 1.2mm ancho) vs T05 (2.0 × 1.5mm). Pips más densos y agrupados — mayor contacto con la pelota. Más spin en loops lentos y medios. La más spin-orientada de la gama Tenergy. Usada por varios pros japoneses en antebrazo.'},
-
-  // ── DHS ────────────────────────────────────────────────────────────────────
-  {id:'r011', brand:'DHS', name:'Hurricane 3 NEO (39°)', type:'Ofensiva', cat:'China', nivel:'Avanzado', speed:72, spin:95, control:82, hardness:39, hardScale:'°C (≈49°ESN)', thickness:['2.1','2.15','Max'], price:18, color:'red/black', note:'Goma tácky pretensionada. La más usada en selecciones nacionales de China. Requiere madera rápida para sacar su potencial. Increíble relación calidad-precio.'},
-  {id:'r012', brand:'DHS', name:'Hurricane 3 NEO (41°)', type:'Ofensiva', cat:'China', nivel:'Profesional', speed:72, spin:96, control:80, hardness:41, hardScale:'°C (≈51°ESN)', thickness:['2.1','Max'], price:18, color:'red/black', note:'Versión más dura, usada por Ma Long y Fan Zhendong. Potencial de spin máximo pero muy exigente técnicamente.'},
-  {id:'r013', brand:'DHS', name:'Hurricane 8', type:'Ofensiva', cat:'China', nivel:'Avanzado', speed:82, spin:94, control:72, hardness:40, hardScale:'°C (≈50°ESN)', thickness:['2.1','Max'], price:25, color:'red/black', note:'20% más rápida y elástica que H3 NEO. Híbrido entre esponja china y ESN. Muy popular fuera de China.'},
-  {id:'r014', brand:'DHS', name:'Hurricane 8-80', type:'Ofensiva', cat:'China', nivel:'Avanzado', speed:82, spin:94, control:74, hardness:38, hardScale:'°C (≈48°ESN)', thickness:['2.1','Max'], price:25, color:'red/black', note:'Versión más blanda y ligera del H8. Más fácil de jugar, muy recomendada en r/tabletennis como entrada al estilo chino.'},
-  {id:'r015', brand:'DHS', name:'Goldarc 8', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:84, spin:88, control:70, hardness:48, hardScale:'°ESN', thickness:['2.1','Max'], price:30, color:'red/black', note:'Tensor ESN de DHS. Para quien quiere juego chino sin curva de aprendizaje tácky.'},
-  {id:'r062', brand:'DHS', name:'Hurricane 9', type:'Ofensiva', cat:'China', nivel:'Avanzado', speed:80, spin:96, control:76, hardness:40, hardScale:'°C (≈50°ESN)', thickness:['2.1','Max'], price:30, color:'red/black', note:'Generación premium de DHS tras H3 NEO. Topsheet tácky de mayor fricción + esponja más elástica. Mejor rebote y más fácil de activar que H3 NEO con palas más lentas. Recomendada como upgrade accesible para jugadores europeos que quieren entrar al estilo chino.'},
-  {id:'r062b', brand:'DHS', name:'Hurricane 3 National (Blue)', type:'Ofensiva', cat:'China', nivel:'Profesional', speed:72, spin:97, control:80, hardness:40, hardScale:'°C (≈50°ESN)', thickness:['2.1','Max'], price:22, color:'red/black', note:'Versión "National" del H3 con esponja azul — la que usan los seleccionados chinos oficialmente. Mayor rebote que la versión estándar. Frecuentemente boosteada (aceite) en competición. La más deseada y discutida en r/tabletennis.'},
-
-  // ── TIBHAR ─────────────────────────────────────────────────────────────────
-  {id:'r016', brand:'Tibhar', name:'Evolution MX-P', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:88, control:52, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:45, color:'red/black', note:'La alternativa más recomendada al Tenergy 05 en r/tabletennis. Precio mucho menor, sensaciones similares. Durable y consistente.'},
-  {id:'r017', brand:'Tibhar', name:'Evolution MX-P 50°', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:91, spin:90, control:47, hardness:50, hardScale:'°ESN', thickness:['2.15','Max'], price:48, color:'red/black', note:'Red Power Sponge 50°. Mayor control a máxima velocidad vs MX-P estándar. Trayectoria más directa. Peso 51g (menor rotura de spin). Validado por pros europeos.'},
-  {id:'r018', brand:'Tibhar', name:'Evolution MX-S', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:92, spin:90, control:45, hardness:50, hardScale:'°ESN', thickness:['2.0','2.2','Max'], price:45, color:'red/black', note:'Versión más dura y directa del MX-P. Una de las más duras del mercado ESN.'},
-  {id:'r019', brand:'Tibhar', name:'Evolution EL-S', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:82, spin:86, control:60, hardness:43, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:40, color:'red/black', note:'EL = Extra Loop. Más spin y menos velocidad que MX-P. Ideal reverso para jugadores loop-orientados.'},
-  {id:'r020', brand:'Tibhar', name:'Evolution FX-P', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:80, spin:82, control:66, hardness:43, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:40, color:'red/black', note:'FX = Flexible. La más suave y controlable de la serie Evolution. Muy recomendada para intermedio.'},
-  {id:'r020b', brand:'Tibhar', name:'Genius Sound', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:86, spin:86, control:55, hardness:47, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:48, color:'red/black'},
-  {id:'r063', brand:'Tibhar', name:'Evolution EL-P', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:84, spin:89, control:57, hardness:43, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:42, color:'red/black', note:'EL-P = Extra Loop Power. Posición intermedia entre EL-S (más control) y MX-P (más velocidad). Poros abiertos, topsheet de alta fricción. Ideal para loops de media y larga distancia. Muy valorada como alternativa más económica al MX-P con mejor arco.'},
-  {id:'r063b', brand:'Tibhar', name:'Quantum X Pro', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:92, spin:90, control:48, hardness:48, hardScale:'°ESN', thickness:['2.0','2.2','Max'], price:52, color:'red/black', note:'Generación Quantum de Tibhar — nueva topsheet y sponge. Velocidad muy alta, trayectoria directa. Pensada para jugadores agresivos que quieren ir más rápido que MX-P manteniendo cierto control. Comparada favorablemente al MX-P 50° en reviews.'},
-
-  // ── ANDRO ──────────────────────────────────────────────────────────────────
-  // NOTA: Serie Rasanter clásica (poros abiertos) vs nueva serie EC (poros cerrados)
-  {id:'r021', brand:'Andro', name:'Rasanter R47', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:96, spin:96, control:68, hardness:47, hardScale:'°ESN', thickness:['1.7','1.9','2.3 (Ultramax)','Max'], price:50, color:'red/black', note:'Specs oficiales Andro: Velocidad 96/100, Spin 96/100, Control 68/100. Esponja Ultramax 2.3mm de poros abiertos — tacto único y muy apreciado en r/tabletennis.'},
-  {id:'r022', brand:'Andro', name:'Rasanter R48 EC', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:89, control:62, hardness:38, hardScale:'°ESN (EC)', thickness:['2.0','2.3','Max'], price:63, color:'red/black', note:'Nueva serie EC (Energy Cell). Esponja de poros cerrados 38°ESN — más suave de lo que el nombre indica. Catapult effect mejorado. Precio €62.95.'},
-  {id:'r023', brand:'Andro', name:'Rasanter R53', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:98, spin:97, control:67, hardness:53, hardScale:'°ESN', thickness:['2.0','2.3','Max'], price:52, color:'red/black', note:'Specs oficiales: Velocidad 98, Spin 97, Control 67. La alternativa más citada al Dignics 09C en r/tabletennis. Menor precio, sensaciones muy similares.'},
-  {id:'r023b', brand:'Andro', name:'Rasanter R53 EC', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:98, spin:97, control:67, hardness:43, hardScale:'°ESN (EC)', thickness:['2.0','2.3','Max'], price:63, color:'red/black', note:'Nueva serie EC del R53. Sponge cerrado 42.5°ESN — se siente más suave pese a rendir igual. Precio €62.95.'},
-  {id:'r023c', brand:'Andro', name:'Rasanter C53', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:97, spin:98, control:68, hardness:53, hardScale:'°ESN', thickness:['2.0','2.3','Max'], price:65, color:'red/black', note:'C = Counter-spin. Topsheet optimizado para contra-topspin. Mayor tiempo de contacto. Precio €64.95. Ideal jugadores que juegan mucho a media mesa.'},
-  {id:'r024', brand:'Andro', name:'Rasanter R42', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:80, spin:85, control:67, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.3','Max'], price:46, color:'red/black', note:'La entrada a la gama Rasanter. Recomendada en r/tabletennis para jugadores intermedio que quieren catapult effect.'},
-  {id:'r025', brand:'Andro', name:'Hexer Grip', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:76, spin:82, control:72, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:38, color:'red/black'},
-
-  // ── VICTAS ─────────────────────────────────────────────────────────────────
-  {id:'r026', brand:'Victas', name:'V>15 Extra', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:91, spin:91, control:50, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:48, color:'red/black', note:'Desarrollada con Koki Niwa y Liam Pitchford. Muy usada por pros japoneses y europeos. Spin y control excepcionales para su velocidad.'},
-  {id:'r027', brand:'Victas', name:'V>15 Stiff', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:93, spin:91, control:46, hardness:53, hardScale:'°ESN', thickness:['2.0','Max'], price:48, color:'red/black'},
-  {id:'r028', brand:'Victas', name:'V>15 Limber', type:'All-round', cat:'Tensor', nivel:'Avanzado', speed:84, spin:87, control:60, hardness:43, hardScale:'°ESN', thickness:['1.7','1.9','2.0','Max'], price:46, color:'red/black'},
-  {id:'r028b', brand:'Victas', name:'V>22 Double Extra', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:96, spin:91, control:80, hardness:50, hardScale:'°ESN', thickness:['2.0','Max'], price:58, color:'red/black', note:'Specs oficiales Victas: Velocidad 9.6/10, Spin 9.1/10, Control 8.0/10. Esponja 50.3°ESN, fabricada en Alemania. Combinación única de velocidad + control. Desarrollada con Koki Niwa y Liam Pitchford.'},
-  {id:'r029', brand:'Victas', name:'Ventus Regular', type:'All-round', cat:'Tensor', nivel:'Principiante', speed:74, spin:78, control:74, hardness:37, hardScale:'°ESN', thickness:['1.7','1.9','2.0','Max'], price:32, color:'red/black', note:'La goma de entrada de Victas. Fácil y perdona errores. Recomendada para principiante en r/tabletennis.'},
-  {id:'r064', brand:'Victas', name:'Ventus Extra', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:80, spin:82, control:68, hardness:40, hardScale:'°ESN', thickness:['1.7','1.9','2.0','Max'], price:36, color:'red/black', note:'Escalón entre Ventus Regular y la gama V>15. Más rápida que Regular pero mantiene el control de la serie Ventus. Buena goma de transición principiante→intermedio para jugadores de Victas.'},
-  {id:'r065', brand:'Victas', name:'V>15 Sticky', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:87, spin:92, control:56, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:48, color:'red/black', note:'Topsheet tácky (estilo chino) + esponja ESN 48°. Híbrida desarrollada para jugadores europeos que quieren spin chino con velocidad ESN. Trayectoria muy alta y pronunciada. La versión dura de la pareja Sticky.'},
-  {id:'r066', brand:'Victas', name:'V>15 Sticky Soft', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:84, spin:91, control:62, hardness:42, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:46, color:'red/black', note:'Topsheet tácky + esponja blanda 42°ESN. Más controlable y con mayor arco que V>15 Sticky. Más tiempo de contacto, ideal para topspin lento y medios desde la mesa. Muy recomendada como reverso híbrido para jugadores all-round o en transición a gomas chinas.'},
-  {id:'r067', brand:'Victas', name:'Curl P-1V', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:80, spin:42, control:76, hardness:40, hardScale:'°ESN', thickness:['1.5','1.7','2.0'], price:36, color:'red/black', note:'Short pips (pips cortos sin invertido). Usados por Kasumi Ishikawa en el reverso. Permiten bloques muy rápidos, golpes directos y bolas con poco spin que perturban al rival. La referencia de Victas en pips cortos ofensivos.'},
-
-  // ── JOOLA ──────────────────────────────────────────────────────────────────
-  {id:'r030', brand:'JOOLA', name:'Dynaryz AGR', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:95, spin:94, control:46, hardness:50, hardScale:'°ESN', thickness:['2.0','Max'], price:55, color:'red/black', note:'Specs oficiales: Velocidad 129/200, Spin 128/200, Dureza 50°ESN. Una de las gomas más rápidas del mercado. "Hyper Bounce" sponge. Pimples: 0.9mm alto × 1.7mm ancho.'},
-  {id:'r031', brand:'JOOLA', name:'Dynaryz ACC', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:91, control:54, hardness:48, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:55, color:'red/black', note:'ACC = Accuracy. Más control que AGR manteniendo buen spin. La elección intermedia de la gama Dynaryz.'},
-  {id:'r032', brand:'JOOLA', name:'Dynaryz CMD', type:'All-round', cat:'Tensor', nivel:'Avanzado', speed:83, spin:87, control:64, hardness:43, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:48, color:'red/black'},
-  {id:'r033', brand:'JOOLA', name:'Rhyzen ZGR', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:85, spin:96, control:68, hardness:54, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:45, color:'red/black', note:'Specs Rhyzen ZGR: Velocidad 8.5/10, Spin 11/10, Control 8.5/10. Topsheet semi-tácky con "Hyper Traction". Hardness Hard+ ~54°ESN. Pimples 0.8mm × 1.5mm — máximo spin.'},
-  {id:'r034', brand:'JOOLA', name:'Rhyzen CMD', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:78, spin:82, control:70, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:42, color:'red/black'},
-  {id:'r034b', brand:'JOOLA', name:'Golden Tango', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:74, spin:80, control:74, hardness:38, hardScale:'°ESN', thickness:['1.5','1.8','2.0','Max'], price:35, color:'red/black', note:'Ideal para transición de principiante a intermedio. Buena durabilidad.'},
-  {id:'r068', brand:'JOOLA', name:'Rhyzen Ice', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:88, spin:95, control:65, hardness:47, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:56, color:'red/black', note:'Topsheet semi-tácky de alta fricción + esponja Hyper Bounce ESN. Lanzada 2024. La más spin-orientada de la nueva gama Rhyzen. Gran arco y tiempo de contacto. Alternativa a DNA Dragon Grip con mejor control en cortos. Muy bien valorada en r/tabletennis para jugadores que quieren explorar híbridas.'},
-  {id:'r069', brand:'JOOLA', name:'Rhyzen Fire', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:90, control:62, hardness:48, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:54, color:'red/black', note:'Tensor ESN puro de la nueva gama Rhyzen (2024). Topsheet grippy (no tácky) con esponja Hyper Bounce. Más rápida y directa que Rhyzen Ice. Ideal para jugadores ofensivos agresivos. Comparada favorablemente al Rasanter R47 en foros europeos.'},
-  {id:'r070', brand:'JOOLA', name:'Rhyzen TTR', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:83, spin:89, control:66, hardness:47, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:45, color:'red/black', note:'TTR = Table Tennis Revolution. La más controlable de la serie Rhyzen. Esponja más dócil con buen spin. Para jugadores avanzados que priorizan consistencia y estabilidad sobre velocidad máxima.'},
-  {id:'r070b', brand:'JOOLA', name:'Dynaryz DVX', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:94, spin:92, control:52, hardness:50, hardScale:'°ESN', thickness:['2.0','Max'], price:58, color:'red/black', note:'La más avanzada de la gama Dynaryz. DVX = Dynamic Velocity Xtra. Mayor velocidad que AGR con topsheet rediseñada. Para jugadores de élite que buscan el máximo de la gama JOOLA.'},
-
-  // ── YASAKA ─────────────────────────────────────────────────────────────────
-  {id:'r035', brand:'Yasaka', name:'Rakza Z', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:90, control:54, hardness:48, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:42, color:'red/black', note:'Topsheet semi-tácky con NSS (New Surface System). Excelente spin para su precio. Muy recomendada en r/tabletennis como alternativa económica al Dignics 09C.'},
-  {id:'r036', brand:'Yasaka', name:'Rakza Z Extra Hard', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:92, spin:90, control:49, hardness:50, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:44, color:'red/black', note:'Topsheet tácky + Power Sponge más duro. Mayor potencia que Rakza Z. Arco muy alto. Requiere buena técnica para control en cortos.'},
-  {id:'r037', brand:'Yasaka', name:'Rakza X', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:86, spin:87, control:60, hardness:47, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:38, color:'red/black', note:'NSS topsheet grippy (no tácky). Power Sponge ~47°. Balance versátil — una de las más vendidas en Europa.'},
-  {id:'r038', brand:'Yasaka', name:'Rakza 7', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:78, spin:82, control:70, hardness:40, hardScale:'°ESN', thickness:['1.5','1.7','1.9','2.1','Max'], price:35, color:'red/black', note:'Muy popular en r/tabletennis para nivel intermedio. Fácil de usar, buen spin, durable. Recomendada por coaches para primera tensor seria.'},
-  {id:'r039', brand:'Yasaka', name:'Mark V', type:'All-round', cat:'Tensor', nivel:'Principiante', speed:64, spin:70, control:82, hardness:35, hardScale:'°ESN', thickness:['1.5','1.8','2.0','Max'], price:28, color:'red/black', note:'Clásico absoluto desde 1976. La goma más vendida de la historia. Ideal para aprender fundamentos. Muy perdonadora de errores.'},
-  {id:'r080', brand:'Yasaka', name:'Rakza X Soft', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:82, spin:85, control:66, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:36, color:'red/black', note:'Versión más blanda y controlable del Rakza X. Misma topsheet NSS (New Surface System) grippy pero esponja ~42°ESN más cómoda. Muy recomendada para reverso o jugadores que vienen de gomas más lentas y quieren dar el salto a la gama Rakza.'},
-  {id:'r080b', brand:'Yasaka', name:'Rakza 7 Soft', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:74, spin:78, control:74, hardness:35, hardScale:'°ESN', thickness:['1.5','1.7','1.9','2.1','Max'], price:32, color:'red/black', note:'Versión blanda de la Rakza 7. Más perdona errores y con mayor arco. Ideal como primera tensor para jugadores que buscan mejorar el spin sin sacrificar control. Recomendada para nivel principiante avanzado / intermedio en r/tabletennis.'},
-
-  // ── DONIC ──────────────────────────────────────────────────────────────────
-  {id:'r040', brand:'Donic', name:'Bluefire M1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:87, spin:88, control:54, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:45, color:'red/black', note:'Esponja de micro-poros. Sensación explosiva, buen spin. Comparada favorablemente al MX-P en reviews de TTDaily.'},
-  {id:'r041', brand:'Donic', name:'Bluefire M2', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:83, spin:84, control:60, hardness:43, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:40, color:'red/black'},
-  {id:'r042', brand:'Donic', name:'Bluefire M3', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:78, spin:80, control:68, hardness:38, hardScale:'°ESN', thickness:['1.5','1.7','1.9','Max'], price:38, color:'red/black'},
-  {id:'r043', brand:'Donic', name:'Baracuda', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:74, spin:80, control:72, hardness:42, hardScale:'°ESN', thickness:['1.5','1.8','2.0','Max'], price:35, color:'red/black', note:'Muy buena para defensa o all-round. Excelente control en servicio y recepción.'},
-  {id:'r044', brand:'Donic', name:'Acuda S1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:85, spin:86, control:56, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:42, color:'red/black'},
-  {id:'r078', brand:'Donic', name:'Acuda S2', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:80, spin:82, control:66, hardness:40, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:38, color:'red/black', note:'Versión más suave y controlable de la serie Acuda. Ideal para jugadores de nivel intermedio con juego all-round que quieren dar el paso a una tensor sin perder control.'},
-  {id:'r079', brand:'Donic', name:'Bluefire JP 01', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:86, spin:87, control:56, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:44, color:'red/black', note:'JP = Japanese Pips. Geometría de pips de estilo japonés — mayor densidad de contacto. Sensación similar a las tensoras japonesas premium a precio europeo. Buena alternativa al Tibhar MX-P con arco más alto según reviews de TT Daily.'},
-
-  // ── STIGA ──────────────────────────────────────────────────────────────────
-  {id:'r045', brand:'Stiga', name:'DNA Dragon Grip', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:88, spin:97, control:55, hardness:55, hardScale:'°ESN', thickness:['2.1','Max'], price:58, color:'red/black', note:'Specs oficiales Stiga: Dureza 55°ESN. Topsheet tácky chino con esponja alemana ESN. Best-seller mundial 2023-25. La híbrida más recomendada en r/tabletennis — alternativa al Dignics 09C a menor precio.'},
-  {id:'r046', brand:'Stiga', name:'DNA Platinum XH', type:'Ofensiva', cat:'Tensor', nivel:'Profesional', speed:98, spin:98, control:67, hardness:53, hardScale:'°ESN', thickness:['2.1','2.3','Max'], price:55, color:'red/black', note:'Specs oficiales Stiga: Velocidad 98, Spin 98, Control 67. Dureza 52.5°ESN. Pimples cortos + hoja fina = mayor grosor de esponja posible. Enorme potencial de spin.'},
-  {id:'r047', brand:'Stiga', name:'Airoc Astro M', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:89, control:56, hardness:48, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:50, color:'red/black'},
-  {id:'r047b', brand:'Stiga', name:'Airoc Astro H', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:91, spin:90, control:52, hardness:52, hardScale:'°ESN', thickness:['2.0','2.1','Max'], price:52, color:'red/black', note:'Versión más dura del Astro M. Trayectoria más directa y lineal.'},
-  {id:'r048', brand:'Stiga', name:'Mantra M', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:84, spin:86, control:62, hardness:45, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:45, color:'red/black', note:'La más vendida de Stiga en Europa. Muy popular en r/tabletennis para jugadores que buscan consistencia.'},
-  {id:'r076', brand:'Stiga', name:'DNA Dragon Grip H', type:'Ofensiva', cat:'Híbrida', nivel:'Profesional', speed:90, spin:97, control:50, hardness:57, hardScale:'°ESN', thickness:['2.1','Max'], price:60, color:'red/black', note:'Versión más dura del DNA Dragon Grip. Esponja 57°ESN — para jugadores con técnica consolidada que necesitan trayectoria más plana y mayor velocidad. Exige golpe muy potente para activar correctamente el catapult.'},
-  {id:'r077', brand:'Stiga', name:'DNA Future M', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:90, control:58, hardness:47, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:52, color:'red/black', note:'Serie DNA Future de Stiga (2024). Sponge texture optimizado para mayor dwell time. Versión M (Medium) — balance entre spin y velocidad. Alternativa moderna al Mantra M con mayor rendimiento y mejor arco.'},
-  {id:'r077b', brand:'Stiga', name:'Mantra H', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:88, control:56, hardness:50, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:46, color:'red/black', note:'Versión más dura de la serie Mantra. Más velocidad y trayectoria más directa que Mantra M. Para jugadores avanzados con golpe más potente que buscan más punch en la serie Mantra.'},
-
-  // ── NITTAKU ────────────────────────────────────────────────────────────────
-  {id:'r049', brand:'Nittaku', name:'Fastarc G-1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:95, spin:96, control:68, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:45, color:'red/black', note:'Specs oficiales Nittaku: Velocidad 15.00, Spin 12.50. Dureza 47.5°. G = Grip-first. 13 pips/5cm horizonal. La mejor relación calidad-precio según r/tabletennis en gama premium. Mima Ito la usa en antebrazo.'},
-  {id:'r050', brand:'Nittaku', name:'Fastarc C-1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:88, control:64, hardness:43, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:42, color:'red/black', note:'C = Catch-first. Misma topsheet que G-1 pero esponja más blanda 43°ESN. Más control y arco. Perfecta para reverso.'},
-  {id:'r050b', brand:'Nittaku', name:'Fastarc P-1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:96, spin:88, control:60, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:45, color:'red/black', note:'P = Power-first. Más velocidad y pips más finos. Trayectoria más plana y directa que G-1.'},
-  {id:'r050c', brand:'Nittaku', name:'Fastarc S-1', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:97, spin:86, control:55, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:45, color:'red/black', note:'S = Speed-first. La más rápida de la gama Fastarc. Para contraatacadores y bloqueadores rápidos.'},
-  {id:'r051', brand:'Nittaku', name:'Moristo SP', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:85, spin:55, control:72, hardness:40, hardScale:'°ESN', thickness:['1.5','1.8','2.0','Max'], price:36, color:'red/black', note:'Short pips (pips cortos). No inverted. Usado por Mima Ito en el reverso — golpes muy planos y veloces. La referencia en pips cortos para el juego moderno.'},
-  {id:'r081', brand:'Nittaku', name:'Hammond Pro Beta', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:80, spin:84, control:68, hardness:42, hardScale:'°ESN', thickness:['1.5','1.7','1.9','2.0','Max'], price:38, color:'red/black', note:'Tensor ESN asequible de Nittaku. Muy controlable con buen spin. La más recomendada de la gama media de Nittaku para nivel intermedio-avanzado. Excelente durabilidad y muy consistente. Buena opción de bajo presupuesto para empezar con tensoras japonesas.'},
-  {id:'r081b', brand:'Nittaku', name:'Fastarc G-1 FX', type:'All-round', cat:'Tensor', nivel:'Avanzado', speed:86, spin:90, control:72, hardness:43, hardScale:'°ESN', thickness:['1.8','2.0','Max'], price:42, color:'red/black', note:'Versión FX (Flexible) de la Fastarc G-1. Misma topsheet G-1 pero esponja más blanda. Mayor control y arco más alto. Muy popular como reverso o para jugadores que quieren spin de G-1 con más tolerancia de errores.'},
-
-  // ── XIOM ───────────────────────────────────────────────────────────────────
-  {id:'r052', brand:'Xiom', name:'Vega Asia', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:82, spin:84, control:62, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:35, color:'red/black', note:'La más vendida de Xiom en Asia. Buen spin y control a precio asequible. Recomendada frecuentemente en r/tabletennis.'},
-  {id:'r053', brand:'Xiom', name:'Vega Europe', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:76, spin:80, control:70, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:32, color:'red/black', note:'La entrada a las tensoras europeas. Buen punto de partida para nivel intermedio.'},
-  {id:'r054', brand:'Xiom', name:'Vega Pro', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:85, spin:86, control:58, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:40, color:'red/black'},
-  {id:'r055', brand:'Xiom', name:'Omega VII Tour', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:91, control:52, hardness:50, hardScale:'°ESN', thickness:['2.0','Max'], price:55, color:'red/black', note:'La mejor de Xiom en gama ESN pura. Alto spin y buena velocidad.'},
-  {id:'r056', brand:'Xiom', name:'Omega VII Asia', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:88, spin:94, control:56, hardness:55, hardScale:'°ESN', thickness:['2.0','Max'], price:55, color:'red/black', note:'Topsheet semi-tácky + esponja ESN. Alternativa económica al DNA Dragon Grip con perfil similar.'},
-  {id:'r071', brand:'Xiom', name:'Omega VII China', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:87, spin:93, control:60, hardness:52, hardScale:'°ESN', thickness:['2.0','Max'], price:50, color:'red/black', note:'Topsheet tácky estilo chino + esponja ESN de Xiom. Intermedia entre Omega VII Asia (semi-tácky) y gomas chinas puras. Gran arco y spin. Alternativa a DNA Dragon Grip con precio más asequible.'},
-  {id:'r072', brand:'Xiom', name:'Vega X', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:84, spin:84, control:60, hardness:45, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:38, color:'red/black', note:'Opción de gama alta asequible de Xiom. Buen equilibrio velocidad-spin-control a precio muy competitivo. Recomendada para jugadores avanzados con presupuesto ajustado que quieren salir de la Vega Asia.'},
-  {id:'r073', brand:'Xiom', name:'Omega VIII Euro', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:87, spin:88, control:60, hardness:47, hardScale:'°ESN', thickness:['1.9','2.1','Max'], price:55, color:'red/black', note:'Nueva generación Omega VIII (2024). Sustituta del Omega VII Tour. ESN puro con sponge de nueva generación. Mayor control y arco que su predecesora. Ideal para loops consistentes desde la mesa y media distancia.'},
-  {id:'r074', brand:'Xiom', name:'Omega VIII Pro', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:91, spin:91, control:55, hardness:50, hardScale:'°ESN', thickness:['2.0','2.1','Max'], price:58, color:'red/black', note:'La referencia de la nueva gama Omega VIII (2024). Mayor velocidad y spin que Omega VIII Euro. Tensora ESN de alto rendimiento muy valorada en r/tabletennis como alternativa a T05 y MX-P 50° con mejor control.'},
-  {id:'r075', brand:'Xiom', name:'Omega VIII Asia', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:89, spin:95, control:58, hardness:55, hardScale:'°ESN', thickness:['2.0','Max'], price:58, color:'red/black', note:'La versión híbrida de la nueva gama Omega VIII (2024). Topsheet semi-tácky + nueva esponja ESN. Máximo spin de la gama. El puente definitivo entre el estilo asiático y europeo. Muy recomendada como alternativa al Dignics 09C en foros europeos.'},
-
-  // ── SANWEI ─────────────────────────────────────────────────────────────────
-  {id:'r057', brand:'Sanwei', name:'Gear Hyper', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:86, spin:90, control:58, hardness:39, hardScale:'°C', thickness:['2.0','Max'], price:25, color:'red/black', note:'Híbrida económica muy recomendada en r/tabletennis. Topsheet tácky chino, esponja ESN 37-39°C. La mejor relación calidad-precio en híbridas.'},
-  {id:'r058', brand:'Sanwei', name:'T88-III', type:'All-round', cat:'China', nivel:'Principiante', speed:68, spin:82, control:78, hardness:38, hardScale:'°C', thickness:['2.0','Max'], price:12, color:'red/black', note:'La goma china más barata del mercado. Buena para empezar a aprender el estilo tácky sin invertir mucho.'},
-
-  // ── GEWO ───────────────────────────────────────────────────────────────────
-  {id:'r059', brand:'Gewo', name:'Nexxus EL Pro 48', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:86, spin:87, control:57, hardness:48, hardScale:'°ESN', thickness:['1.8','2.0','2.3','Max'], price:44, color:'red/black', note:'Tensor alemán premium. EL = Extra Loop. Gran spin y arco alto con buena velocidad.'},
-  {id:'r060', brand:'Gewo', name:'Proton Neo 375', type:'All-round', cat:'Tensor', nivel:'Intermedio', speed:78, spin:80, control:70, hardness:37, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:36, color:'red/black'},
-  {id:'r082', brand:'Gewo', name:'Hype EL Pro 47.5', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:88, spin:87, control:57, hardness:47, hardScale:'°ESN', thickness:['1.8','2.0','2.2','Max'], price:44, color:'red/black', note:'Tensor alemán de calidad premium. EL = Extra Loop. Dureza 47.5°ESN. Gran spin y arco alto con buena velocidad. Competidora directa del Tibhar MX-P — muy valorada por usuarios europeos que buscan menos conocida pero igual rendimiento.'},
-  {id:'r082b', brand:'Gewo', name:'Nexxus EL Pro 50', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:90, spin:89, control:54, hardness:50, hardScale:'°ESN', thickness:['2.0','2.2','Max'], price:46, color:'red/black', note:'Versión más dura del Nexxus EL Pro. 50°ESN — trayectoria más directa y mayor velocidad. Para jugadores avanzados que buscan el extra de potencia manteniendo el característico arco EL de Gewo.'},
-
-  // ── SANWEI (añadir) ─────────────────────────────────────────────────────────
-  {id:'r083', brand:'Sanwei', name:'Target Pro GT-H3', type:'Ofensiva', cat:'Híbrida', nivel:'Avanzado', speed:84, spin:90, control:62, hardness:39, hardScale:'°C', thickness:['2.0','Max'], price:20, color:'red/black', note:'Híbrida económica de Sanwei. Topsheet tácky + esponja ESN. La segunda opción de Sanwei tras Gear Hyper. Muy buena relación calidad-precio para experimentar con el estilo chino sin gran inversión.'},
-
-  // ── ANDRO (ampliar) ─────────────────────────────────────────────────────────
-  {id:'r084', brand:'Andro', name:'Hexer Powergrip', type:'All-round', cat:'Tensor', nivel:'Avanzado', speed:84, spin:87, control:64, hardness:42, hardScale:'°ESN', thickness:['1.7','1.9','2.1','Max'], price:42, color:'red/black', note:'Versión más rápida del Hexer Grip. Manteniendo buen control pero con más velocidad y spin. Recomendada en r/tabletennis para jugadores all-round que quieren más potencia sin ir a la gama Rasanter.'},
-  {id:'r085', brand:'Andro', name:'Rasanter V47', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:93, spin:94, control:64, hardness:47, hardScale:'°ESN', thickness:['2.0','2.3','Max'], price:52, color:'red/black', note:'V = Velocity. Esponja Ultramax de poros abiertos orientada a la velocidad. Trayectoria más baja y directa que R47 con similar catapult. Ideal para jugadores que priorizan velocidad sobre arco. Muy demandada en 2023-24.'},
-
-  // ── DR. NEUBAUER ─────────────────────────────────────────────────────────────
-  // Especialistas en gomas especiales: pips cortos, pips largos y anti-topspin
-  {id:'r086', brand:'Dr. Neubauer', name:'Desperado', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:84, spin:48, control:70, hardness:40, hardScale:'°ESN', thickness:['1.5','1.7','2.0'], price:32, color:'red/black', note:'Short pips ofensivos — la referencia de Dr. Neubauer en pips cortos. Permiten ataques muy planos y rápidos con efecto perturbador. Muy populares en defensores modernos que atacan con el lado de pips. Buena alternativa al Moristo SP.'},
-  {id:'r087', brand:'Dr. Neubauer', name:'Fighter Pro', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:80, spin:42, control:76, hardness:38, hardScale:'°ESN', thickness:['1.5','1.7','2.0'], price:30, color:'red/black', note:'Short pips más controlables que Desperado. Permiten bloqueos rápidos y ataques directos con buena consistencia. Ideal para jugadores que dan el paso a los pips cortos desde una invertida.'},
-  {id:'r088', brand:'Dr. Neubauer', name:'Explosion', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:82, spin:50, control:72, hardness:40, hardScale:'°ESN', thickness:['1.5','1.8','2.0'], price:30, color:'red/black', note:'Short pips con algo más de spin que Desperado. Arco ligeramente más pronunciado. Para jugadores que quieren pips cortos pero con capacidad de hacer algo de topspin activo.'},
-  {id:'r089', brand:'Dr. Neubauer', name:'Terminator', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:52, spin:35, control:80, hardness:35, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:28, color:'red/black', note:'Long pips para chop y defensa clásica. Genera inversión de efecto notable. Muy usada en defensores europeos de la vieja escuela. La referencia de Dr. Neubauer en pips largos para chopping.'},
-  {id:'r090', brand:'Dr. Neubauer', name:'K.O. Pro', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:48, spin:30, control:78, hardness:32, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:30, color:'red/black', note:'Long pips muy perturbadores. "K.O." = knock-out por la dificultad que genera al rival para leer el efecto. Muy blanda y con máxima inversión de spin. Para defensores que quieren confundir al máximo con el lado de pips.'},
-  {id:'r091', brand:'Dr. Neubauer', name:'Gorilla', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:45, spin:20, control:82, hardness:30, hardScale:'°ESN', thickness:['1.5','2.0'], price:28, color:'red/black', note:'Anti-topspin — elimina casi completamente el efecto de la pelota entrante. La superficie "muerta" devuelve pelotas sin spin o con inversión sutil. Ideal para combinadores que quieren bloquear con el lado anti sin dar información al rival.'},
-  {id:'r092', brand:'Dr. Neubauer', name:'Agressor', type:'Defensiva', cat:'Anti', nivel:'Intermedio', speed:50, spin:25, control:80, hardness:33, hardScale:'°ESN', thickness:['1.5','1.8','2.0'], price:26, color:'red/black', note:'Anti-topspin menos extremo que Gorilla. Algo más de velocidad y control. Buena opción de entrada al mundo anti-topspin. Muy usada por combinadores de nivel intermedio-avanzado que buscan variación táctica.'},
-
-  // ── DER MATERIALSPEZIALIST ───────────────────────────────────────────────────
-  // Fabricante alemán especializado en gomas defensivas y perturbadoras de alta calidad
-  {id:'r093', brand:'Der Materialspezialist', name:'Geist', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:45, spin:28, control:78, hardness:30, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:30, color:'red/black', note:'"Geist" = fantasma en alemán. Long pips muy perturbadores y difíciles de leer. La goma de pips largos más valorada de la marca. Genera inversión de spin extrema en chops y bloqueos. Muy popular en defensores europeos de competición.'},
-  {id:'r094', brand:'Der Materialspezialist', name:'Inferno', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:46, spin:18, control:82, hardness:28, hardScale:'°ESN', thickness:['1.5','1.8','2.0'], price:28, color:'red/black', note:'"Inferno" — anti-topspin de alta perturbación. Superficie de muy bajo coeficiente de fricción — el topspin del rival prácticamente no afecta a la pelota devuelta. Excelente para bloqueos y chops anti.'},
-  {id:'r095', brand:'Der Materialspezialist', name:'Feuerfest', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:42, spin:15, control:84, hardness:26, hardScale:'°ESN', thickness:['1.5','2.0'], price:28, color:'red/black', note:'"Feuerfest" = ignífugo. El anti-topspin más "muerto" de la marca — mínima fricción, máxima absorción. Para defensores clásicos que quieren bloquear con total neutralidad de efecto. Excelente para contrarrestar los topspin más agresivos.'},
-  {id:'r096', brand:'Der Materialspezialist', name:'Dornenglanz', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:50, spin:32, control:76, hardness:32, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:30, color:'red/black', note:'"Dornenglanz" = brillo espinoso. Long pips con algo más de velocidad que Geist — permite ataques ocasionales además del chop defensivo. Para defensores modernos que quieren más versatilidad con pips largos.'},
-
-  // ── DER MATERIALSPEZIALIST (Short Pips) ─────────────────────────────────────
-  // Gamas Spinfire y Firestorm — short pips ofensivos de alta calidad alemana
-  {id:'r120', brand:'Der Materialspezialist', name:'Spinfire', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:95, spin:89, control:92, hardness:45, hardScale:'°ESN', thickness:['1.5','1.8','2.0','2.2'], price:38, color:'red/black/multicolor', note:'Short pips revolucionarios con propiedades similares a goma invertida manteniendo la perturbación de pips cortos. Misma fórmula que el top-seller Firestorm. Cabezas de pips estrechamente dispuestas permiten gran rotación en servicios y juego ofensivo. Trayectoria plana con velocidad muy alta. Control extremadamente alto para jugadores de pips experimentados. Disponible en multicolor.'},
-  {id:'r121', brand:'Der Materialspezialist', name:'Spinfire Soft', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:90, spin:92, control:94, hardness:40, hardScale:'°ESN', thickness:['1.5','1.8','2.0','2.2'], price:38, color:'red/black', note:'Versión soft del Spinfire con esponja power más suave. Mayor tiempo de contacto con la bola = desarrollo de spin llevado al máximo. Control significativamente mejorado por velocidad ligeramente reducida. El efecto perturbador en golpes, contraataques y bloqueos se mantiene alto. Bloqueos producen efecto "diving" desagradable tras la red del rival.'},
-  {id:'r122', brand:'Der Materialspezialist', name:'Firestorm', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:92, spin:82, control:90, hardness:47, hardScale:'°ESN', thickness:['1.5','1.8','2.0','2.2'], price:36, color:'red/black', note:'Short pips tensionados que combinan topsheet con mucho spin y esponja rápida con efecto "glue". Alto spin y velocidad con fuerte catapult para pips cortos. Permite ejecutar la mayoría de golpes de goma invertida mientras se puede golpear directo como pips. Pips cónicos dispuestos en cruz. Ideal para jugadores cerca de la mesa que prefieren drive sobre loop.'},
-  {id:'r123', brand:'Der Materialspezialist', name:'Firestorm Soft', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:88, spin:86, control:92, hardness:42, hardScale:'°ESN', thickness:['1.5','1.8','2.0','2.2'], price:36, color:'red/black', note:'Versión soft del Firestorm con esponja power moderna más suave. Mayor dwell time aumenta propiedades de spin al límite superior. Velocidad ligeramente reducida resulta en valores de control aumentados. Muy fácil de loopear, muy rápida con excelente control. Considerada entre los mejores short pips disponibles según reviews.'},
-
-  // ── DR. NEUBAUER (pips adicional) ─────────────────────────────────────────
-  {id:'r097', brand:'Dr. Neubauer', name:'Spinfire', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:83, spin:58, control:70, hardness:40, hardScale:'°ESN', thickness:['1.5','1.7','2.0'], price:30, color:'red/black', note:'Short pips diseñados para generar más spin que los pips-out convencionales. A diferencia del Desperado, los pips del Spinfire permiten brushes activos con algo de efecto. Para jugadores que quieren usar pips pero sin renunciar completamente al topspin. Muy efectivo en bloqueos activos cerca de la mesa.'},
-
-  // ── DR. NEUBAUER (gomas adicionales) ─────────────────────────────────────────
-  // Anti-spin y pips especiales — la especialidad de la marca
-  {id:'r098', brand:'Dr. Neubauer', name:'Buffalo', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:38, spin:15, control:85, hardness:42, hardScale:'°ESN', thickness:['1.2','1.5','1.8'], price:32, color:'red/black', note:'Anti-topspin de superficie completamente sin fricción — benchmark en inversión de efecto. Más lento que el clásico A-B-S pero con control excepcional. Ideal para bloqueos perturbadores cerca de la mesa. Permite ataques engañosos con pushing agresivo contra bolas cortadas. Muy valorado en r/tabletennis por defensores europeos.'},
-  {id:'r099', brand:'Dr. Neubauer', name:'Defence Master', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:42, spin:35, control:88, hardness:38, hardScale:'°ESN', thickness:['1.5','1.8','2.0'], price:30, color:'red/black', note:'Anti-spin con superficie adherente (tacky) — genera máxima rotación en chops. A diferencia de los antis sin fricción, este permite producir efecto propio. Trayectoria muy plana contra topspins rápidos. Excelente para variaciones de efecto en el juego defensivo. Muy popular entre choppers europeos.'},
-  {id:'r100', brand:'Dr. Neubauer', name:'Grizzly', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:40, spin:18, control:84, hardness:40, hardScale:'°ESN', thickness:['1.2','1.5','1.8'], price:32, color:'red/black', note:'Anti-spin especialmente recomendado para contraataque y ataques con swing agresivo. La versión 1.2mm es la más lenta para bloqueos cortos, mientras 1.5-1.8mm permiten más posibilidades ofensivas. Esponja rosa (New A-B-S) vs blanca distingue versiones. Excelente para defensa con corte desde la segunda-tercera zona.'},
-  {id:'r101', brand:'Dr. Neubauer', name:'Killer', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:98, spin:80, control:96, hardness:35, hardScale:'°ESN', thickness:['1.3','1.5','1.8','2.0','2.2'], price:34, color:'red/black', note:'Short pips de referencia de Dr. Neubauer — velocidad muy alta (98) con control excepcional (96). Esponja soft que permite buen tacto. Ideal para juego agresivo cerca de la mesa con bloqueos y golpes planos. Muy efectivo para hit y smash. La base de la familia Killer.'},
-  {id:'r102', brand:'Dr. Neubauer', name:'Killer Extreme', type:'Ofensiva', cat:'Pips-out', nivel:'Profesional', speed:102, spin:80, control:88, hardness:42, hardScale:'°ESN', thickness:['1.3','1.5','1.8','2.0','2.2'], price:36, color:'red/black', note:'La versión más rápida de la familia Killer — speed 102 para juego explosivo cerca de la mesa. Combina velocidad extrema con inversión de efecto perturbadora. Menos control que el Killer original pero máxima agresividad. Para jugadores que buscan la máxima potencia en short pips.'},
-  {id:'r103', brand:'Dr. Neubauer', name:'Killer Pro', type:'Ofensiva', cat:'Pips-out', nivel:'Avanzado', speed:92, spin:62, control:77, hardness:44, hardScale:'°ESN', thickness:['1.3','1.5','1.8','2.0','2.2'], price:34, color:'red/black', note:'Mismo topsheet que Killer pero con esponja revolucionaria más dura. Mantiene el efecto perturbador en bloqueos, contraataques y golpes, pero con mayor velocidad. Esponja ligeramente más rígida que el original. Para jugadores que quieren más potencia sin perder la perturbación.'},
-  {id:'r104', brand:'Dr. Neubauer', name:'Diamant', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:80, spin:67, control:75, hardness:40, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:30, color:'red/black', note:'Pips de longitud media (half-long) — arma multipropósito con gran control y efecto perturbador. Excelente para recepción de servicio, bloqueos, ataques y defensa. Muy efectivo en bloqueos y golpes directos — la bola sale muy plana y queda baja tras el bote. Pips suaves y de longitud media.'},
-  {id:'r105', brand:'Dr. Neubauer', name:'Allround Premium', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:56, spin:44, control:90, hardness:35, hardScale:'°ESN', thickness:['OX','0.6','1.0','1.3'], price:32, color:'red/black', note:'Long pips con geometría inusual — pips distribuidos verticalmente. Combinación de nuevos componentes de goma produce efecto asombroso tanto para juego activo como pasivo. Control excepcional (90). Ideal para chop-block y defensa con variación.'},
-  {id:'r106', brand:'Dr. Neubauer', name:'Allround Premium Two', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:55, spin:75, control:83, hardness:35, hardScale:'°ESN', thickness:['OX','0.6','1.0','1.3'], price:32, color:'red/black', note:'Diseñada para la pelota de plástico — lleva el chop y chop-block a nuevos niveles. Bloqueos con golpe corto y rápido mantienen al rival ocupado. Velocidades se pueden acelerar fácilmente con movimiento de muñeca, especialmente contra bolas cortadas. Evolución del Allround Premium.'},
-  {id:'r107', brand:'Dr. Neubauer', name:'Number 1', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:52, spin:40, control:92, hardness:32, hardScale:'°ESN', thickness:['OX','0.6','1.0','1.5'], price:30, color:'red/black', note:'Long pips innovadores con fórmula totalmente nueva y alineación vertical de pips. Pips muy suaves que reducen la velocidad del juego en bloqueos pasivos. Control fantástico a todos los niveles — especialmente notable en recepción y bloqueo contra topspins rápidos. Bote muy bajo en el lado contrario. Nivel de perturbación: 6.5.'},
-  {id:'r108', brand:'Dr. Neubauer', name:'Aggressor Evo', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:65, spin:55, control:78, hardness:38, hardScale:'°ESN', thickness:['1.0','1.5','OX'], price:32, color:'red/black', note:'Pips half-long con geometría completamente nueva — pips tan largos como los long pips pero con fórmula similar a Killer/Killer Pro. Produce considerable efecto perturbador en bloqueos, contraataques y golpes directos. La bola se "ralentiza" en golpes pasivos. Evolución del Aggressor original.'},
-  {id:'r109', brand:'Dr. Neubauer', name:'Desperado Reloaded', type:'Defensiva', cat:'Pips-out', nivel:'Avanzado', speed:58, spin:48, control:85, hardness:35, hardScale:'°ESN', thickness:['OX','0.6','1.0','1.5'], price:32, color:'red/black', note:'Nueva generación de long pips — establece nuevo estándar en versatilidad y eficacia. Golpes pasivos y especialmente chop-block contra topspin producen bote muy bajo. Excelente arma también para atacar. Mejora significativa sobre el Desperado clásico para la pelota de plástico.'},
-
-  // ── DR. NEUBAUER A-B-S Serie (Anti-Spin sin fricción) ───────────────────────
-  // La línea más famosa de anti-topspin de Dr. Neubauer
-  {id:'r110', brand:'Dr. Neubauer', name:'A-B-S', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:42, spin:12, control:88, hardness:40, hardScale:'°ESN', thickness:['1.8','2.0','2.3'], price:30, color:'red/black', note:'El anti-topspin original de referencia para bloqueo cerca de la mesa. Más lento que Gorilla y Grizzly con mucho mejor control. Produce muy buena inversión de spin y posibilidades de ataque mediante pushing agresivo y lifting, especialmente contra bolas cortadas. El benchmark de anti-spin sin fricción.'},
-  {id:'r111', brand:'Dr. Neubauer', name:'A-B-S 2', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:38, spin:10, control:92, hardness:42, hardScale:'°ESN', thickness:['2.1','2.3','2.5'], price:32, color:'red/black', note:'Desarrollada específicamente para la pelota de plástico ABS. Bloqueo increíblemente corto y bajo sin que la bola salte. Muy buena inversión de spin contra loops con rotación. Bloqueos pasivos contra topspins rápidos sin spin producen bola "diving" que causa problemas al rival. 2.1mm mejor inversión, 2.5mm máximo control.'},
-  {id:'r112', brand:'Dr. Neubauer', name:'A-B-S 2 Evo', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:36, spin:8, control:90, hardness:45, hardScale:'°ESN', thickness:['1.8','2.1','2.3','2.5'], price:34, color:'red/black', note:'Versión con fórmula de goma más dura que A-B-S 2 — reduce tiempo de contacto durante impacto. Produce MÁS inversión de spin que A-B-S 2. Bola bota aún más bajo en bloqueos, incluso contra topspins rápidos con poco spin. Golpe muy duro y máxima inversión. Para defensores que priorizan la perturbación máxima.'},
-  {id:'r113', brand:'Dr. Neubauer', name:'A-B-S 2 Pro', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:40, spin:14, control:91, hardness:40, hardScale:'°ESN', thickness:['2.0'], price:34, color:'red/black', note:'Co-desarrollada con SpinAssociated (Italia). Más versátil que A-B-S 2 Evo — esponja algo más suave (2.0mm) ofrece valores de control más altos y opciones de juego más variables. A diferencia de otros antis sin fricción, permite producir bloqueo activo. Excelente para jugadores que quieren versatilidad además de perturbación.'},
-  {id:'r114', brand:'Dr. Neubauer', name:'A-B-S 3', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:44, spin:16, control:86, hardness:38, hardScale:'°ESN', thickness:['1.5','2.0'], price:32, color:'red/black', note:'Puede usarse incluso en maderas con carbon. Topsheet más duro que Evo2 pero esponja más suave — permite golpear la bola como un anti "trick". Inversión de spin ligeramente menor que Evo2. Para jugadores de 2.0mm recomendado, 1.5mm puede hacer "bottom out" con golpes fuertes.'},
-  {id:'r115', brand:'Dr. Neubauer', name:'A-B-S 3 Pro', type:'Defensiva', cat:'Anti', nivel:'Avanzado', speed:42, spin:15, control:88, hardness:39, hardScale:'°ESN', thickness:['1.3','1.7'], price:34, color:'red/black', note:'Tercera goma co-desarrollada con SpinAssociated (Italia). Versión más versátil del A-B-S 3. Velocidad entre A-B-S 2 Pro y A-B-S 3. Bloqueo pasivo con 1.7mm permite bloqueos muy cortos incluso en maderas rápidas. Esponja roja nueva más efectiva para pushing agresivo y lifting con 1.3mm para presionar al rival.'},
-];
-
-const BLADES = [
-  // ── BUTTERFLY ──────────────────────────────────────────────────────────────
-  // Butterfly reaction (R) / vibration (V): R mayor = más rápida, V mayor = menos vibración (más control)
-  {id:'b001', brand:'Butterfly', name:'Fan Zhendong ALC', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC', material:'ALC', layers:7, speed:90, control:72, weight:87, thickness:5.8, price:175, wood:'Koto · Ayous · Ayous · Ayous · Koto + ALC×2', note:'R:11.8, V:10.3. La madera más usada en el circuito WTT 2024-25. 5W+2ALC exterior. Core más grueso que Viscaria — mayor potencia en powerloop. Fan Zhendong la usa con Hurricane 3 NEO 41°.'},
-  {id:'b002', brand:'Butterfly', name:'Viscaria', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC', material:'ALC', layers:7, speed:90, control:70, weight:86, thickness:5.7, price:185, wood:'Koto · Ayous · Ayous · Ayous · Koto + ALC×2', note:'R:11.7, V:9.8. El clásico ALC de Butterfly. Core algo más fino que FZD ALC. Una de las maderas más copiadas del mercado. Precio alto justificado por su consistencia.'},
-  {id:'b003', brand:'Butterfly', name:'Timo Boll ALC', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC', material:'ALC', layers:7, speed:88, control:75, weight:84, thickness:5.7, price:165, wood:'Koto · Ayous · Ayous · Ayous · Koto + ALC×2', note:'R:11.4, V:10.8. La más ligera de las ALC Butterfly (84g). Muy apreciada en r/tabletennis por su tacto y manejo. Mejor opción si vienes de madera pura.'},
-  {id:'b004', brand:'Butterfly', name:'Zhang Jike ALC', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC', material:'ALC', layers:7, speed:89, control:73, weight:87, thickness:5.8, price:185, wood:'Koto · Hinoki · Ayous · Hinoki · Koto + ALC×2', note:'R:11.5, V:10.5. Similar a Timo Boll ALC pero con feeling más duro al impacto. Preferida por jugadores con golpe más compacto.'},
-  {id:'b005', brand:'Butterfly', name:'Innerforce Layer ALC', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC inner', material:'ALC', layers:7, speed:86, control:78, weight:88, thickness:5.9, price:130, wood:'Hinoki · ALC · Ayous · Kiri · Ayous · ALC · Hinoki', note:'ALC en capas internas (inner fiber). Mucho más tacto madero que outer ALC. Menor catapult, mayor dwell time. Muy recomendada en r/tabletennis para jugadores que buscan transición suave al carbon.'},
-  {id:'b006', brand:'Butterfly', name:'Viscaria Super ALC', cat:'OFF+', nivel:'Profesional', plies:'5W+2ALC', material:'ALC', layers:7, speed:94, control:66, weight:88, thickness:5.8, price:220, wood:'Koto · Ayous · Ayous · Ayous · Koto + Super ALC×2', note:'Versión 2023 actualizada del Viscaria. Core más grueso y ALC con mayor densidad. Elástico y muy directa. Solo recomendada para técnica consolidada.'},
-  {id:'b007', brand:'Butterfly', name:'Fan Zhendong Super ALC', cat:'OFF+', nivel:'Profesional', plies:'5W+2ALC', material:'ALC', layers:7, speed:94, control:67, weight:89, thickness:5.9, price:220, wood:'Koto · Ayous · Ayous · Ayous · Koto + Super ALC×2', note:'La madera más nueva y rápida de Butterfly (2023). Super ALC de mayor densidad vs ALC estándar. Fan Zhendong la usa en partidos WTT 2024-25.'},
-  {id:'b008', brand:'Butterfly', name:'Timo Boll ZLC', cat:'OFF+', nivel:'Profesional', plies:'5W+2ZLC', material:'ZLC', layers:7, speed:96, control:62, weight:86, thickness:5.6, price:185, wood:'Koto · Ayous · Ayous · Ayous · Koto + ZLC×2', note:'ZLC = Zylon-Carbon. Más rígido y explosivo que ALC. Sensación muy directa, poca dwell. Para contraatacadores y bloqueadores rápidos.'},
-  {id:'b009', brand:'Butterfly', name:'Zhang Jike ZLC', cat:'OFF+', nivel:'Profesional', plies:'5W+2ZLC', material:'ZLC', layers:7, speed:96, control:62, weight:89, thickness:5.7, price:200, wood:'Koto · Hinoki · Ayous · Hinoki · Koto + ZLC×2'},
-  {id:'b010', brand:'Butterfly', name:'Timo Boll Spirit', cat:'ALL+', nivel:'Intermedio', plies:'7W', material:'Madera pura', layers:7, speed:74, control:82, weight:85, thickness:6.1, price:85, wood:'Koto · Ayous · Ayous · Kiri · Ayous · Ayous · Koto', note:'7 capas todo madera. La opción Butterfly más recomendada en r/tabletennis para nivel intermedio. Transición perfecta de ALL a OFF.'},
-  {id:'b011', brand:'Butterfly', name:'SK7', cat:'OFF-', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:80, control:78, weight:89, thickness:6.2, price:120, wood:'Koto · Hinoki · Ayous · Kiri · Ayous · Hinoki · Koto', note:'7 capas madera pura premium. Excelente tacto y feeling. La madera pura más apreciada por coaches para técnica. Hinoki interior da una sensación de rebote única.'},
-  {id:'b012', brand:'Butterfly', name:'Primorac', cat:'OFF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:78, control:80, weight:84, thickness:5.9, price:75, wood:'Koto · Hinoki · Kiri · Hinoki · Koto', note:'5 capas. Un clásico absoluto. Muy recomendada para jugadores de nivel intermedio-avanzado que buscan un blade madero sin gastar mucho.'},
-
-  // ── STIGA ──────────────────────────────────────────────────────────────────
-  {id:'b013', brand:'Stiga', name:'Carbonado 145', cat:'OFF+', nivel:'Avanzado', plies:'5W+2C TeXtreme', material:'Carbon', layers:7, speed:96, control:60, weight:90, thickness:5.7, price:160, wood:'Limba · Ayous · Balsa · Ayous · Limba + TeXtreme 100g/m²×2', note:'TeXtreme 100g/m² en ángulo 45° — rigidez torsional alta + flexibilidad. Trayectoria alta y estable. Muy popular en Europa.'},
-  {id:'b014', brand:'Stiga', name:'Carbonado 45', cat:'OFF+', nivel:'Avanzado', plies:'5W+2C TeXtreme', material:'Carbon', layers:7, speed:94, control:63, weight:87, thickness:5.7, price:150, wood:'Limba · Ayous · Balsa · Ayous · Limba + TeXtreme 64g/m²×2', note:'TeXtreme 64g/m² — versión más flexible y ligera del C145. Más tacto, menos rigidez. La preferida en r/tabletennis entre los dos Carbonado.'},
-  {id:'b015', brand:'Stiga', name:'Infinity VPS V', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:82, control:76, weight:85, thickness:6.0, price:80, wood:'Limba · Ayous · Ayous · Kiri · Ayous · Ayous · Limba', note:'7 capas madera premium sueca. Buena alternativa a SK7 a menor precio.'},
-  {id:'b016', brand:'Stiga', name:'Clipper Wood', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:80, control:78, weight:90, thickness:6.5, price:70, wood:'Limba · Ayous · Ayous · Ayous · Ayous · Ayous · Limba', note:'Uno de los blades más vendidos de la historia. 7W con feeling muy consistente y predecible. Recomendada frecuentemente en r/tabletennis para intermedio-avanzado.'},
-  {id:'b017', brand:'Stiga', name:'Cybershape Carbon', cat:'OFF+', nivel:'Profesional', plies:'5W+2C', material:'Carbon', layers:7, speed:96, control:60, weight:82, thickness:5.7, price:200, wood:'Limba · Ayous · Balsa · Ayous · Limba + Carbon×2', note:'Forma octogonal única — distribución uniforme de impacto. Innovación de Stiga 2022. Más ligero que la media (82g) con alto rendimiento. Muy directa y rígida.'},
-  {id:'b018', brand:'Stiga', name:'Inspira Hybrid Carbon', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:88, control:70, weight:86, thickness:5.7, price:130, wood:'Limba · HybridCarbon · Ayous · Balsa · Ayous · HybridCarbon · Limba', note:'Hybrid Carbon interior. Gran equilibrio entre tacto madero y potencia carbon.'},
-
-  // ── DONIC ──────────────────────────────────────────────────────────────────
-  {id:'b019', brand:'Donic', name:'Waldner Senso Carbon', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:88, control:72, weight:88, thickness:5.9, price:100, wood:'Koto · Carbon · Ayous · Ayous · Ayous · Carbon · Koto', note:'Línea Waldner premium. Carbon en posición 2 (inner). Buen balance entre control y velocidad. Usada por Jan-Ove Waldner en su carrera.'},
-  {id:'b020', brand:'Donic', name:'Waldner Allplay', cat:'ALL', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:68, control:86, weight:82, thickness:5.8, price:55, wood:'Abachi · Ayous · Ayous · Ayous · Abachi', note:'La madera de iniciación más recomendada en r/tabletennis junto a Yasaka Sweden Extra. Muy controlable y perdona errores.'},
-  {id:'b021', brand:'Donic', name:'Original Carbospeed', cat:'OFF+', nivel:'Avanzado', plies:'5W+2C outer', material:'Carbon', layers:7, speed:94, control:64, weight:90, thickness:5.8, price:120, wood:'Carbon · Koto · Ayous · Ayous · Koto · Carbon', note:'Carbon exterior muy directo y explosivo. Alta rigidez. Para jugadores que buscan velocidad máxima con buena consistencia.'},
-  {id:'b022', brand:'Donic', name:'Baum Esprit', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:82, control:76, weight:88, thickness:6.2, price:75, wood:'Abachi · Ayous · Ayous · Kiri · Ayous · Ayous · Abachi'},
-
-  // ── TIBHAR ─────────────────────────────────────────────────────────────────
-  {id:'b023', brand:'Tibhar', name:'Samsonov Force Pro Black', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:87, control:74, weight:89, thickness:5.9, price:100, wood:'Koto · Carbon · Ayous · Ayous · Ayous · Carbon · Koto', note:'Carbon interior (posición 2). Tacto muy madero con potencia extra. Recomendada en r/tabletennis como alternativa económica a Innerforce ALC con perfil similar.'},
-  {id:'b024', brand:'Tibhar', name:'Stratus Power Wood', cat:'OFF-', nivel:'Intermedio', plies:'7W', material:'Madera pura', layers:7, speed:78, control:80, weight:88, thickness:6.3, price:65, wood:'Abachi · Ayous · Ayous · Kiri · Ayous · Ayous · Abachi', note:'7W madera pura. Control excepcional. Recomendada en r/tabletennis para jugadores intermedios que no quieren carbon todavía.'},
-  {id:'b025', brand:'Tibhar', name:'IV-S', cat:'ALL', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:66, control:88, weight:80, thickness:5.8, price:45, wood:'Abachi · Ayous · Ayous · Ayous · Abachi', note:'5 capas ligero (80g). La mejor relación calidad-precio para principiantes según r/tabletennis.'},
-  {id:'b026', brand:'Tibhar', name:'Hybrid MK', cat:'OFF', nivel:'Avanzado', plies:'5W+2Karbonik', material:'Carbon', layers:7, speed:90, control:68, weight:87, thickness:5.8, price:130, wood:'Koto · Karbonik · Ayous · Ayous · Ayous · Karbonik · Koto', note:'Karbonik (fibra carbon especial de Tibhar). Muy alto top spin, trayectoria pronunciada.'},
-
-  // ── YASAKA ─────────────────────────────────────────────────────────────────
-  {id:'b027', brand:'Yasaka', name:'Ma Lin Extra Offensive', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:87, control:72, weight:86, thickness:5.7, price:85, wood:'Hinoki · Carbon · Ayous · Ayous · Ayous · Carbon · Hinoki', note:'5+2 carbon clásico y versátil. Una de las más populares en Europa. Muy valorada en r/tabletennis como primera madera carbon.'},
-  {id:'b028', brand:'Yasaka', name:'Mark V GPS', cat:'ALL+', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:72, control:84, weight:84, thickness:5.9, price:60, wood:'Madera alemana · Ayous · Ayous · Ayous · Madera sueca', note:'GPS = German + Portuguese + Swedish wood. Tacto excepcional para su precio.'},
-  {id:'b029', brand:'Yasaka', name:'Sweden Extra', cat:'ALL+', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:70, control:86, weight:82, thickness:6.0, price:55, wood:'Koto · Ayous · Ayous · Ayous · Koto', note:'La madera pura de 5 capas más recomendada en r/tabletennis para principiantes y jugadores all-round. Usada como referencia en las "beginner setups". Tacto excepcional.'},
-
-  // ── ANDRO ──────────────────────────────────────────────────────────────────
-  {id:'b030', brand:'Andro', name:'Treiber K', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:88, control:72, weight:88, thickness:5.9, price:90, wood:'Koto · Carbon · Ayous · Ayous · Ayous · Carbon · Koto'},
-  {id:'b031', brand:'Andro', name:'Treiber K Underlimber', cat:'ALL+', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:74, control:82, weight:84, thickness:5.8, price:65, wood:'Koto · Ayous · Ayous · Ayous · Koto'},
-
-  // ── NITTAKU ────────────────────────────────────────────────────────────────
-  {id:'b032', brand:'Nittaku', name:'Acoustic', cat:'ALL+', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:74, control:84, weight:83, thickness:5.9, price:80, wood:'Koto · Hinoki · Balsa · Hinoki · Koto', note:'Core de balsa muy ligero. Sensación de impacto muy especial — sound al golpear la pelota notoriamente bueno. Muy apreciada en Japón y mencionada en r/tabletennis como opción única.'},
-  {id:'b033', brand:'Nittaku', name:'Hamburgum', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:82, control:76, weight:88, thickness:6.2, price:75, wood:'Koto · Ayous · Ayous · Kiri · Ayous · Ayous · Koto'},
-  {id:'b034', brand:'Nittaku', name:'Violin', cat:'OFF', nivel:'Avanzado', plies:'5W+2FG', material:'Fibra de vidrio', layers:7, speed:86, control:72, weight:84, thickness:5.6, price:85, wood:'FV · Hinoki · Ayous · Ayous · Ayous · Hinoki · FV', note:'Fibra de vidrio exterior. Trayectoria más redonda y alta que carbon. Muy recomendada en r/tabletennis para jugadores que prefieren arco alto y no quieren la dureza del carbon.'},
-
-  // ── VICTAS ─────────────────────────────────────────────────────────────────
-  {id:'b035', brand:'Victas', name:'Victas 302', cat:'ALL', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:70, control:86, weight:82, thickness:5.8, price:55, wood:'Ayous · Ayous · Ayous · Ayous · Ayous', note:'La madera de inicio de Victas. Muy recomendada para principiantes que van a jugar con gomas V>15 Limber o similares.'},
-  {id:'b036', brand:'Victas', name:'Victas 222', cat:'ALL+', nivel:'Intermedio', plies:'5W+2FG', material:'Fibra de vidrio', layers:7, speed:78, control:80, weight:84, thickness:5.7, price:70, wood:'Ayous · FV · Ayous · Ayous · Ayous · FV · Ayous', note:'Fibra de vidrio interior (inner). Más control y tacto que carbon. Buen primer paso hacia composites.'},
-
-  // ── XIOM ───────────────────────────────────────────────────────────────────
-  {id:'b037', brand:'Xiom', name:'Vega Pro', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:87, control:73, weight:87, thickness:5.8, price:90, wood:'Koto · Carbon · Ayous · Ayous · Ayous · Carbon · Koto'},
-  {id:'b038', brand:'Xiom', name:'Strato', cat:'ALL+', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:72, control:84, weight:83, thickness:5.9, price:60, wood:'Ayous · Koto · Ayous · Koto · Ayous'},
-
-  // ── DHS ────────────────────────────────────────────────────────────────────
-  {id:'b039', brand:'DHS', name:'Hurricane Long 5', cat:'OFF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:84, control:74, weight:88, thickness:5.9, price:65, wood:'Hinoki · Ayous · Kiri · Ayous · Hinoki', note:'5 capas puro madera. El favorito de Ma Long hasta 2016 con Hurricane 3 NEO. Referencia del estilo chino clásico — velocidad alta para ser madera pura.'},
-  {id:'b040', brand:'DHS', name:'Hurricane Long 6X', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:90, control:68, weight:90, thickness:6.0, price:80, wood:'Hinoki · Carbon · Ayous · Kiri · Ayous · Carbon · Hinoki', note:'Versión carbon del HL5. Muy usada en China por jugadores jóvenes del equipo nacional.'},
-
-  // ── BUTTERFLY (modelos adicionales) ────────────────────────────────────────
-  {id:'b041', brand:'Butterfly', name:'Korbel', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:76, control:82, weight:86, thickness:6.0, price:70, wood:'Koto · Hinoki · Kiri · Hinoki · Koto', note:'El clásico "starter blade" de Butterfly para nivel avanzado. 5 capas con Hinoki interior y Kiri core — gran tacto y feeling. Muy recomendada en r/tabletennis para jugadores que hacen el salto de ALL a OFF.'},
-  {id:'b042', brand:'Butterfly', name:'Innerforce Layer ZLC', cat:'OFF+', nivel:'Profesional', plies:'5W+2ZLC inner', material:'ZLC', layers:7, speed:92, control:70, weight:87, thickness:5.8, price:185, wood:'Hinoki · ZLC · Ayous · Kiri · Ayous · ZLC · Hinoki', note:'ZLC interior — más dwell time y tacto que outer ZLC. Combinación de potencia ZLC con feeling casi madero. Muy usada por jugadores europeos de élite que vienen del Innerforce ALC.'},
-  {id:'b043', brand:'Butterfly', name:'Harimoto Innerforce ALC', cat:'OFF', nivel:'Avanzado', plies:'5W+2ALC inner', material:'ALC', layers:7, speed:88, control:76, weight:86, thickness:5.8, price:150, wood:'Hinoki · ALC · Ayous · Kiri · Ayous · ALC · Hinoki', note:'Diseñada con Tomokazu Harimoto. ALC inner — mayor control que outer ALC con buena potencia. Hinoki como capa exterior — feeling muy especial y directo. La preferida del joven campeón.'},
-
-  // ── STIGA (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b044', brand:'Stiga', name:'Allround Classic', cat:'ALL', nivel:'Principiante', plies:'5W', material:'Madera pura', layers:5, speed:66, control:88, weight:82, thickness:5.9, price:50, wood:'Limba · Ayous · Ayous · Ayous · Limba', note:'El blade de madera pura más vendido de Stiga. 5 capas Limba — ligero y muy controlable. La referencia en maderas para iniciación y juego all-round. Excelente para aprender la técnica de topspin.'},
-  {id:'b045', brand:'Stiga', name:'Offensive Classic', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:78, control:80, weight:86, thickness:6.0, price:65, wood:'Limba · Ayous · Kiri · Ayous · Limba', note:'5 capas con Kiri core — más velocidad que Allround Classic manteniendo buen tacto. La evolución natural dentro de la gama Stiga. Muy popular en clubes europeos para entrenamiento técnico.'},
-  {id:'b046', brand:'Stiga', name:'Ebenholz NCT V', cat:'OFF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:82, control:76, weight:90, thickness:6.1, price:85, wood:'Ébano · Ayous · Kiri · Ayous · Ébano', note:'Outer ply de ébano — uno de los materiales más duros usados en TT. Feeling muy crujiente y directo. La madera pura más rápida de Stiga. Para jugadores avanzados que quieren máxima velocidad sin composites.'},
-  {id:'b047', brand:'Stiga', name:'Allround Evolution', cat:'ALL+', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:72, control:84, weight:84, thickness:6.0, price:58, wood:'Limba · Ayous · Balsa · Ayous · Limba', note:'Core de balsa más ligero que el Allround Classic. Mayor velocidad y menor peso. La transición ideal entre Allround Classic y Offensive Classic. Recomendada en r/tabletennis para jugadores que quieren dar el paso a ALL+.'},
-
-  // ── DONIC (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b048', brand:'Donic', name:'Persson Powerplay', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:78, control:80, weight:85, thickness:6.0, price:60, wood:'Abachi · Ayous · Ayous · Ayous · Abachi', note:'Diseñada con Jörgen Persson. 5 capas clásicas — buen balance entre velocidad y control. Una de las maderas más usadas en Suecia durante los 90-2000. Sigue siendo popular en clubes europeos.'},
-  {id:'b049', brand:'Donic', name:'Waldner Exclusive Carbon', cat:'OFF+', nivel:'Profesional', plies:'5W+2C', material:'Carbon', layers:7, speed:94, control:65, weight:89, thickness:5.8, price:145, wood:'Koto · Carbon · Hinoki · Ayous · Hinoki · Carbon · Koto', note:'La versión premium de la línea Waldner. Carbon exterior de alta densidad. Muy rígida y directa. Para jugadores de alto nivel que buscan máxima explosividad.'},
-
-  // ── TIBHAR (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b050', brand:'Tibhar', name:'Stratus Power Carbon', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:88, control:72, weight:87, thickness:5.8, price:90, wood:'Abachi · Carbon · Ayous · Kiri · Ayous · Carbon · Abachi', note:'Versión carbon del Stratus Power Wood. Mantiene la sensación controlada del Wood pero con más catapult. Muy recomendada como primera madera carbon para jugadores que vienen de 7W.'},
-  {id:'b051', brand:'Tibhar', name:'Samsonov Ultra Carbon', cat:'OFF+', nivel:'Profesional', plies:'5W+2C', material:'Carbon', layers:7, speed:94, control:64, weight:88, thickness:5.7, price:140, wood:'Koto · Carbon · Ayous · Ayous · Ayous · Carbon · Koto', note:'La más rápida de la línea Samsonov. Carbon exterior de alta densidad. Trayectoria muy directa. Para jugadores de élite con técnica consolidada.'},
-
-  // ── YASAKA (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b052', brand:'Yasaka', name:'Gatien Extra', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:76, control:82, weight:85, thickness:6.0, price:60, wood:'Koto · Hinoki · Ayous · Hinoki · Koto', note:'Diseñada con Jean-Philippe Gatien. 5 capas con Hinoki — gran tacto y feeling. Una de las maderas puras más apreciadas en Europa. Excelente para trabajar el topspin de calidad.'},
-  {id:'b053', brand:'Yasaka', name:'Extra Offensive', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:82, control:76, weight:88, thickness:6.1, price:70, wood:'Koto · Ayous · Ayous · Kiri · Ayous · Ayous · Koto', note:'7 capas madera pura. La opción all-wood más ofensiva de Yasaka. Buen balance entre potencia y control. Muy apreciada en clubes japoneses.'},
-
-  // ── ANDRO (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b054', brand:'Andro', name:'Treiber S', cat:'ALL+', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:74, control:82, weight:84, thickness:5.8, price:62, wood:'Koto · Ayous · Ayous · Ayous · Koto', note:'Versión más controlable de la línea Treiber. 5 capas clásicas. Buena opción para jugadores intermedio que quieren pasar de ALL a ALL+/OFF-.'},
-  {id:'b055', brand:'Andro', name:'Core Cell OFF', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:90, control:70, weight:86, thickness:5.8, price:100, wood:'Koto · Carbon · Ayous · Balsa · Ayous · Carbon · Koto', note:'Core Cell de balsa + carbon interior. Extremadamente ligera para ser una carbon (86g). Gran potencia con excelente feedback. Muy valorada en la comunidad europea.'},
-
-  // ── NITTAKU (modelos adicionales) ──────────────────────────────────────────
-  {id:'b056', brand:'Nittaku', name:'Goriki 40', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:78, control:80, weight:85, thickness:6.1, price:72, wood:'Koto · Hinoki · Kiri · Hinoki · Koto', note:'5 capas con Hinoki interior — gran feeling y tacto. "Goriki" = fuerza en japonés. Balsa como core — ligera y con buen rebote. Muy apreciada por jugadores de nivel avanzado que prefieren madera pura.'},
-  {id:'b057', brand:'Nittaku', name:'Ludeack Extra', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:84, control:74, weight:89, thickness:6.2, price:78, wood:'Koto · Ayous · Ayous · Kiri · Ayous · Ayous · Koto', note:'7 capas madera pura ofensiva. La más rápida de las maderas puras de Nittaku. Excelente relación calidad-precio para jugadores avanzados que no quieren carbon.'},
-
-  // ── DHS (modelos adicionales) ───────────────────────────────────────────────
-  {id:'b058', brand:'DHS', name:'Hurricane Long 2', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:88, control:70, weight:89, thickness:5.9, price:70, wood:'Hinoki · Carbon · Ayous · Kiri · Ayous · Carbon · Hinoki', note:'Versión mejorada del Hurricane Long con carbon. Muy usada en China con gomas Hurricane. Buen catapult y feedback para el estilo de juego chino ofensivo.'},
-  {id:'b059', brand:'DHS', name:'Power G7', cat:'OFF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:82, control:76, weight:88, thickness:6.0, price:55, wood:'Hinoki · Ayous · Ayous · Kiri · Ayous · Ayous · Hinoki', note:'7 capas madera pura de DHS. Hinoki exterior — gran tacto. Alternativa económica muy popular en China para jugadores que prefieren all-wood.'},
-
-  // ── VICTAS (modelos adicionales) ─────────────────────────────────────────────
-  {id:'b060', brand:'Victas', name:'Victas 401', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:88, control:72, weight:85, thickness:5.8, price:85, wood:'Ayous · Carbon · Ayous · Kiri · Ayous · Carbon · Ayous', note:'Carbon interior de Victas. Diseñada para jugadores que buscan mayor potencia que la gama 300 manteniendo buen tacto. La transición natural dentro de la gama Victas hacia el carbon.'},
-  {id:'b061', brand:'Victas', name:'ZX-Gear CF', cat:'OFF+', nivel:'Profesional', plies:'5W+2CF', material:'Carbon', layers:7, speed:94, control:65, weight:86, thickness:5.7, price:150, wood:'Ayous · ZX-CF · Ayous · Kiri · Ayous · ZX-CF · Ayous', note:'ZX-CF = fibra carbon de alta densidad de Victas. Muy rígida y explosiva. Usada por jugadores del equipo nacional japonés. Trayectoria muy directa y potente.'},
-
-  // ── XIOM (modelos adicionales) ──────────────────────────────────────────────
-  {id:'b062', brand:'Xiom', name:'Omega Carbon', cat:'OFF+', nivel:'Profesional', plies:'5W+2C', material:'Carbon', layers:7, speed:94, control:64, weight:87, thickness:5.7, price:100, wood:'Koto · Carbon · Ayous · Kiri · Ayous · Carbon · Koto', note:'La madera más rápida de Xiom. Carbon exterior de alta densidad. Trayectoria muy directa y potente. Para jugadores de alto nivel que buscan máxima explosividad.'},
-  {id:'b063', brand:'Xiom', name:'Feel ZX', cat:'OFF', nivel:'Avanzado', plies:'5W+2CF', material:'Carbon', layers:7, speed:89, control:70, weight:85, thickness:5.7, price:82, wood:'Koto · ZL Carbon · Ayous · Balsa · Ayous · ZL Carbon · Koto', note:'ZL Carbon (fibra Zylon-like). Más dwell time que carbon estándar. Feeling intermedio entre ALC y carbon duro. Muy valorada para jugadores que vienen de ALC y quieren más velocidad.'},
-
-  // ── DR. NEUBAUER ─────────────────────────────────────────────────────────────
-  {id:'b064', brand:'Dr. Neubauer', name:'Champion', cat:'ALL', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:68, control:86, weight:80, thickness:5.8, price:55, wood:'Hinoki · Ayous · Balsa · Ayous · Hinoki', note:'El blade más vendido de Dr. Neubauer. Hinoki como outer ply — gran feeling y sonido. Core de balsa muy ligero (80g). Diseñado para jugadores que usan gomas especiales (anti, pips). Excelente para juego defensivo y de variación.'},
-  {id:'b065', brand:'Dr. Neubauer', name:'Special', cat:'ALL+', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:76, control:80, weight:80, thickness:5.8, price:65, wood:'Hinoki · Koto · Balsa · Koto · Hinoki', note:'La madera "mágica" mejorada — 4ª generación disponible. Máximos efectos perturbadores y bloqueo muy corto con long pips. Excelente tacto gracias al mango de balsa. Alta velocidad para golpes de ataque súbitos como loop o hit. Control absolutamente soberbio gracias a su construcción única. Disponible con mango flared y anatómico. Desarrollada por el experto en maderas Achim Rendler (Re-Impact).'},
-  {id:'b066', brand:'Dr. Neubauer', name:'Combination Pro', cat:'DEF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:62, control:90, weight:78, thickness:5.7, price:58, wood:'Hinoki · Ayous · Kiri · Ayous · Hinoki', note:'Diseñada específicamente para jugadores que usan combinación de gomas (anti + pips + invertida). Core de Kiri muy suave y ligero. Máximo control para chops y bloqueos con gomas especiales. La favorita de los defensores clásicos europeos.'},
-  {id:'b067', brand:'Dr. Neubauer', name:'Tornado', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:76, control:80, weight:84, thickness:5.9, price:65, wood:'Hinoki · Koto · Kiri · Koto · Hinoki', note:'5 capas con Hinoki outer — más ofensiva dentro de la gama Dr. Neubauer. Buen balance entre el tacto especial de Hinoki y la velocidad suficiente para atacar. Para combinadores que quieren ser más agresivos.'},
-  {id:'b068', brand:'Dr. Neubauer', name:'Gladiator', cat:'OFF', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:88, control:68, weight:86, thickness:5.7, price:78, wood:'Hinoki · Carbon · Ayous · Kiri · Ayous · Carbon · Hinoki', note:'La única madera con carbon de Dr. Neubauer. Hinoki exterior + carbon interior — velocidad de OFF con el tacto Hinoki característico de la marca. Para jugadores ofensivos que quieren usar gomas especiales en un lado.'},
-
-  // ── DR. NEUBAUER (maderas adicionales) ─────────────────────────────────────────
-  {id:'b073', brand:'Dr. Neubauer', name:'Matador', cat:'OFF-', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:90, control:68, weight:88, thickness:6.0, price:49, wood:'Nogal · Ayous · Ayous · Ayous · Ayous · Ayous · Nogal', note:'Diseñada para jugadores que usan pips-out o anti-spin y prefieren maderas rápidas con alto control y efecto perturbador. 5 capas internas de ayous suave con outer plies de nogal fino. Potencia asombrosa para un juego atacante moderno. Permite topspin rápido y loop con mucha rotación fácilmente. Una de las pocas maderas OFF que produce efecto perturbador distintivo con gomas especiales.'},
-  {id:'b074', brand:'Dr. Neubauer', name:'Matador Hybrid Carbon', cat:'OFF+', nivel:'Profesional', plies:'5W+2Hybrid', material:'Carbon', layers:7, speed:94, control:62, weight:87, thickness:5.8, price:85, wood:'Aramid-Carbon · Hinoki · Ayous · Kiri · Ayous · Texalium · Hinoki', note:'Construcción asimétrica única — una capa de Aramid Carbon Hybrid en el lado de derecha y una capa de Texalium en el lado de revés, ambas bajo el outer ply. Capas exteriores ofrecen feeling duro pero responsivo. Muy rápida, rígida y "directa". Para jugadores avanzados que combinan gomas especiales con ataque potente.'},
-  {id:'b075', brand:'Dr. Neubauer', name:'Firewall Plus', cat:'ALL', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:79, control:73, weight:65, thickness:10.0, price:55, wood:'Limba · Ayous · Balsa · Ayous · Limba', note:'Madera oversized con core grueso de balsa y mango grueso pero peso sorprendentemente bajo (65g). Permite juego dinámico ofensivo con gomas invertidas o short pips. La bola se acelera fácilmente para hit y loop gracias al core de balsa. Excelente tacto para golpes pasivos — produce alta inversión de spin y posibilidades de ataque agresivo con long pips. Mejora del best-seller de la marca.'},
-  {id:'b076', brand:'Dr. Neubauer', name:'Phenomenon', cat:'ALL+', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:74, control:82, weight:82, thickness:5.9, price:58, wood:'Hinoki · Koto · Ayous · Koto · Hinoki', note:'Segunda madera de combinación de Dr. Neubauer — permite juego perturbador y consistente cerca de la mesa. Esta madera allround tiene suficiente velocidad para golpes de ataque como contraataque, hit y loop. Ideal para jugadores de estilo combinado que alternan entre defensa y ataque con diferentes gomas.'},
-  {id:'b077', brand:'Dr. Neubauer', name:'Matador Titan', cat:'OFF-', nivel:'Avanzado', plies:'5W+2Ti/Tex', material:'Titanio/Texalium', layers:7, speed:90, control:70, weight:90, thickness:6.15, price:95, wood:'Nogal · Ayous · Titanio · Texalium · Ayous · Ayous · Nogal', note:'Construcción asimétrica como Matador Hybrid Carbon pero con fibras de titanio en el lado de derecha en lugar de carbon. Texalium en el lado de revés se mantiene. Fibras colocadas más al interior (no directamente bajo outer plies). Velocidad similar a Matador Hybrid Carbon pero con mayor control en bloqueos, aperturas de spin y contraataques desde lejos. FH ligeramente más rápido.'},
-  {id:'b078', brand:'Dr. Neubauer', name:'Barricade DEF', cat:'DEF', nivel:'Avanzado', plies:'7W', material:'Madera pura', layers:7, speed:68, control:95, weight:52, thickness:5.5, price:65, wood:'Ayous · Ayous · Ayous · Balsa · Ayous · Ayous · Ayous', note:'Madera defensiva extremadamente ligera (50-57g) — "como una pluma en la mano". Cabeza de pala grande (164x163mm) para mayor cobertura. Core de balsa no muy grueso permite ajuste fácil desde otras maderas. Jugadores reaccionan más rápido en defensa gracias al bajo peso. Ideal para bloqueo corto cerca de la mesa con long pips buscando máxima inversión de spin. Considerada la madera más lenta del mercado.'},
-  {id:'b079', brand:'Dr. Neubauer', name:'Grand Master', cat:'DEF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:63, control:93, weight:68, thickness:5.2, price:60, wood:'Koto · Ayous · Kiri · Ayous · Koto', note:'Madera defensiva lenta que reduce decisivamente la velocidad de la bola entrante. Diseñada específicamente para pelotas ABS — facilita enormemente controlar ataques rápidos con menos rotación. Alto control y excelente feeling para defensa clásica y bloqueo corto cerca de la mesa. Funciona igual de bien con gomas invertidas, pips-out y anti-spin. Permite cambiar ritmo con contraataques y hits.'},
-  {id:'b080', brand:'Dr. Neubauer', name:'Bloodhound', cat:'ALL-', nivel:'Avanzado', plies:'5W+2C', material:'Carbon', layers:7, speed:72, control:85, weight:80, thickness:5.6, price:70, wood:'Abeto · Ayous · Carbon · Ayous · Carbon · Ayous · Abeto', note:'Alternativa interesante para jugadores de long pips o anti-spin que buscan madera relativamente lenta SIN balsa. Madera de Abeto + Ayous + capas de carbon aseguran alta eficacia con gomas especiales. Bien equilibrada para todas las técnicas de ataque con invertidas o pips ofensivos en el otro lado. Nueva referencia en inversión de spin al bloquear con antis sin fricción y efecto "wobbly" con long pips.'},
-  {id:'b081', brand:'Dr. Neubauer', name:'Colossus', cat:'ALL', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:70, control:88, weight:78, thickness:6.0, price:68, wood:'Hinoki · Ayous · Balsa · Ayous · Hinoki', note:'Hito en maderas de combinación — lado de revés AÚN MÁS LENTO que el Dr. Neubauer Titan. Permite ralentizar la bola aún más al bloquear cerca de la mesa con gomas especiales. Topspins rápidos con pelotas ABS se devuelven fácilmente con long pips y muy buena inversión con anti-spin. También aumenta eficacia de pips cortos y medium — bola bota baja en bloqueos, contraataques y hits.'},
-  {id:'b082', brand:'Dr. Neubauer', name:'Titan', cat:'ALL', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:75, control:90, weight:65, thickness:5.8, price:75, wood:'Hinoki · Ayous · Balsa · Ayous · Hinoki', note:'Hito en maderas de combinación — combina características esenciales por primera vez. Fabricada por Re-Impact (Achim Rendler). A pesar del balsa, velocidad en revés extremadamente reducida para devolver corto y bajo. FH permite acelerar mediante pushing agresivo, lifting y contraataque. Construcción asimétrica: lado rápido = etiqueta negra "Dr.Neubauer TITAN" en mango, lado lento = sin etiqueta. Control asombroso con mango posicionado ligeramente descentrado.'},
-  {id:'b083', brand:'Dr. Neubauer', name:'High Technology Plus', cat:'OFF', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:91, control:89, weight:64, thickness:13.0, price:80, wood:'Ayous · Ayous · Balsa · Ayous · Ayous', note:'2ª generación de esta madera ofensiva única. Increíblemente gruesa (13mm) pero muy flexible y ligera (64g). Mango de balsa produce feeling excepcional. Nueva técnica de pegado mejora aún más el tacto. Permite ataque muy efectivo con anti-spin o long pips mediante pushing, lifting y contraataque. Tamaño oversized (163x162mm). Muy buen bloqueo a pesar del grosor.'},
-
-  // ── DER MATERIALSPEZIALIST ───────────────────────────────────────────────────
-  {id:'b069', brand:'Der Materialspezialist', name:'Hinoki 1', cat:'ALL+', nivel:'Avanzado', plies:'5W', material:'Hinoki', layers:5, speed:76, control:82, weight:82, thickness:5.9, price:60, wood:'Hinoki · Ayous · Ayous · Ayous · Hinoki', note:'Pure Hinoki como outer ply en ambos lados — feeling muy especial y único. Fabricada en Alemania con maderas seleccionadas. Ideal para jugadores de estilo asiático que buscan el tacto de Hinoki a precio europeo.'},
-  {id:'b070', brand:'Der Materialspezialist', name:'Quattro', cat:'ALL', nivel:'Intermedio', plies:'5W', material:'Madera pura', layers:5, speed:70, control:86, weight:81, thickness:5.8, price:50, wood:'Koto · Ayous · Balsa · Ayous · Koto', note:'5 capas con balsa core — muy ligera (81g). Buena opción de calidad alemana a precio competitivo. Diseñada para jugadores all-round y defensores. Muy versátil con todo tipo de gomas.'},
-  {id:'b071', brand:'Der Materialspezialist', name:'Carbon Pro', cat:'OFF', nivel:'Avanzado', plies:'5W+2C inner', material:'Carbon', layers:7, speed:88, control:70, weight:85, thickness:5.7, price:80, wood:'Hinoki · Carbon · Ayous · Balsa · Ayous · Carbon · Hinoki', note:'Carbon interior con outer ply de Hinoki. Combina la velocidad del carbon con el tacto especial del Hinoki. Fabricada artesanalmente en Alemania. Para jugadores que usan gomas especiales en un lado y quieren potencia en el otro.'},
-  // ── MATADOR ────────────────────────────────────────────────────────────────
-  {id:'b072', brand:'Matador', name:'Titan', cat:'OFF-', nivel:'Avanzado', plies:'5W', material:'Madera pura', layers:5, speed:78, control:80, weight:85, thickness:6.0, price:58, wood:'Koto · Ayous · Balsa · Ayous · Koto', note:'Madera checa de calidad artesanal. 5 capas con core de balsa ligero para excelente tacto y feeling. Muy apreciada en Europa del Este por jugadores que buscan calidad a precio competitivo frente a las grandes marcas. Ideal para jugadores de estilo loop con buen control y potencia equilibrada.'},
-];
-
-// ─── STATE ─────────────────────────────────────────────────────────────────────
-let currentTab = 'rubbers';
-let compareList = [];
-let userRatings = JSON.parse(localStorage.getItem('tt_ratings') || '{}');
-let userNotes = JSON.parse(localStorage.getItem('tt_notes') || '{}');
-let showOnlyRated = false;
-let tempRating = 0;
-let setupsList = JSON.parse(localStorage.getItem('tt_setups') || '[]');
-let editingSetupId = null;
-let tempSetupRating = 0;
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-function init() {
-  populateBrandFilters();
-  applyFilters();
-}
-
-function populateBrandFilters() {
-  const rubberBrands = [...new Set(RUBBERS.map(r => r.brand))].sort();
-  const bladeBrands = [...new Set(BLADES.map(b => b.brand))].sort();
-  const rSel = document.getElementById('filter-brand');
-  const bSel = document.getElementById('filter-blade-brand');
-  rubberBrands.forEach(b => { rSel.innerHTML += `<option>${b}</option>`; });
-  bladeBrands.forEach(b => { bSel.innerHTML += `<option>${b}</option>`; });
-}
-
-// ─── TAB ──────────────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  currentTab = tab;
-  ['rubbers','blades','compare','setups'].forEach(t => {
-    const btn = document.getElementById('tab-'+t);
-    if (btn) btn.classList.toggle('active', t === tab);
-  });
-  const isSetups = tab === 'setups';
-  const isCompare = tab === 'compare';
-  document.getElementById('main-view').style.display = (!isSetups && !isCompare) ? 'block' : 'none';
-  document.getElementById('compare-view').style.display = isCompare ? 'block' : 'none';
-  document.getElementById('setups-view').style.display = isSetups ? 'block' : 'none';
-  // Sidebar: hide entirely on setups tab
-  document.querySelector('.sidebar').style.display = isSetups ? 'none' : 'flex';
-  document.getElementById('rubber-filters').style.display = tab === 'rubbers' ? 'flex' : 'none';
-  document.getElementById('blade-filters').style.display = tab === 'blades' ? 'flex' : 'none';
-  if (isCompare) renderCompare();
-  else if (isSetups) renderSetups();
-  else applyFilters();
-}
-
-// ─── FILTERS ─────────────────────────────────────────────────────────────────
-function applyFilters() {
-  if (currentTab === 'compare' || currentTab === 'setups') return;
-  const search = document.getElementById('search').value.toLowerCase();
-  const sort = document.getElementById('sort-select').value;
-
-  let items;
-  if (currentTab === 'rubbers') {
-    const type = document.getElementById('filter-type').value;
-    const cat = document.getElementById('filter-cat').value;
-    const brand = document.getElementById('filter-brand').value;
-    const minSpeed = +document.getElementById('filter-speed').value;
-    const minHard = +document.getElementById('filter-hard-min').value;
-    const maxHard = +document.getElementById('filter-hard').value;
-    const nivel = document.getElementById('filter-nivel').value;
-    items = RUBBERS.filter(r => {
-      if (search && !r.name.toLowerCase().includes(search) && !r.brand.toLowerCase().includes(search)) return false;
-      if (type && r.type !== type) return false;
-      if (cat && r.cat !== cat) return false;
-      if (brand && r.brand !== brand) return false;
-      if (r.speed < minSpeed) return false;
-      const hardESN = toESN(r.hardness, r.hardScale);
-      if (hardESN < minHard || hardESN > maxHard) return false;
-      if (nivel && r.nivel !== nivel) return false;
-      if (showOnlyRated && !userRatings[r.id]) return false;
-      return true;
-    });
-  } else {
-    const cat = document.getElementById('filter-blade-cat').value;
-    const brand = document.getElementById('filter-blade-brand').value;
-    const mat = document.getElementById('filter-material').value;
-    const minSpeed = +document.getElementById('filter-blade-speed').value;
-    const nivelBlade = document.getElementById('filter-blade-nivel').value;
-    items = BLADES.filter(b => {
-      if (search && !b.name.toLowerCase().includes(search) && !b.brand.toLowerCase().includes(search)) return false;
-      if (cat && b.cat !== cat) return false;
-      if (brand && b.brand !== brand) return false;
-      if (mat && !b.material.includes(mat)) return false;
-      if (b.speed < minSpeed) return false;
-      if (nivelBlade && b.nivel !== nivelBlade) return false;
-      if (showOnlyRated && !userRatings[b.id]) return false;
-      return true;
-    });
-  }
-
-  // Sort
-  items = [...items];
-  if (sort === 'name') items.sort((a,b) => a.name.localeCompare(b.name));
-  else if (sort === 'speed-desc') items.sort((a,b) => b.speed - a.speed);
-  else if (sort === 'spin-desc') items.sort((a,b) => (b.spin||0) - (a.spin||0));
-  else if (sort === 'control-desc') items.sort((a,b) => b.control - a.control);
-  else if (sort === 'rating-desc') items.sort((a,b) => (userRatings[b.id]||0) - (userRatings[a.id]||0));
-  else if (sort === 'price-asc') items.sort((a,b) => a.price - b.price);
-
-  document.getElementById('results-count').textContent = `${items.length} resultados`;
-  renderGrid(items);
-}
-
-function resetFilters() {
-  document.getElementById('search').value = '';
-  ['filter-type','filter-cat','filter-brand','filter-blade-cat','filter-blade-brand','filter-material','filter-nivel','filter-blade-nivel'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  document.getElementById('filter-speed').value = 0; document.getElementById('spd-val').textContent = '0';
-  document.getElementById('filter-hard-min').value = 25; document.getElementById('hrd-min-val').textContent = '25';
-  document.getElementById('filter-hard').value = 65; document.getElementById('hrd-val').textContent = '65';
-  document.getElementById('filter-blade-speed').value = 0; document.getElementById('bspd-val').textContent = '0';
-  applyFilters();
-}
-
-function toggleRated() {
-  showOnlyRated = !showOnlyRated;
-  document.getElementById('rated-btn').textContent = showOnlyRated ? 'Mostrar todas' : 'Mostrar todas';
-  document.getElementById('rated-btn').style.borderColor = showOnlyRated ? 'var(--star)' : '';
-  applyFilters();
-}
-
-// ─── RENDER GRID ──────────────────────────────────────────────────────────────
-function renderGrid(items) {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-  if (!items.length) {
-    grid.innerHTML = '<div class="no-results"><span>🏓</span>Sin resultados con estos filtros</div>';
-    return;
-  }
-  items.forEach(item => {
-    const inCompare = compareList.includes(item.id);
-    const rating = userRatings[item.id] || 0;
-    const note = userNotes[item.id] || '';
-    const isRubber = currentTab === 'rubbers';
-    grid.innerHTML += `
-    <div class="card ${inCompare?'in-compare':''}" id="card-${item.id}" onclick="openModal('${item.id}')">
-      <div class="card-top">
-        <div>
-          <div class="card-brand">${item.brand}</div>
-          <div class="card-name">${item.name}</div>
-        </div>
-        <button class="btn btn-compare btn-sm ${inCompare?'active':''}" onclick="toggleCompare(event,'${item.id}')">⊕</button>
-      </div>
-      <div class="card-tags">
-        ${isRubber ? `<span class="tag ${typeTag(item.type)}">${item.type}</span><span class="tag tag-cat">${item.cat}</span>` : `<span class="tag tag-off">${item.cat}</span><span class="tag tag-mat">${item.material}</span>`}
-        ${item.nivel ? `<span class="tag" style="background:#1a1a2e;color:${nivelColor(item.nivel)};border:1px solid ${nivelColor(item.nivel)}40">${item.nivel}</span>` : ''}
-      </div>
-      <div class="stat-bars">
-        <div class="stat-row"><span class="stat-label">Velocidad</span><div class="stat-bar-bg"><div class="stat-bar-fill fill-speed" style="width:${item.speed}%"></div></div><span class="stat-num">${item.speed}</span></div>
-        ${isRubber ? `<div class="stat-row"><span class="stat-label">Spin</span><div class="stat-bar-bg"><div class="stat-bar-fill fill-spin" style="width:${item.spin}%"></div></div><span class="stat-num">${item.spin}</span></div>` : ''}
-        <div class="stat-row"><span class="stat-label">Control</span><div class="stat-bar-bg"><div class="stat-bar-fill fill-control" style="width:${item.control}%"></div></div><span class="stat-num">${item.control}</span></div>
-        ${isRubber ? `<div class="stat-row"><span class="stat-label" style="color:#c084fc">Dureza</span><div class="stat-bar-bg" title="${toESN(item.hardness,item.hardScale)}°ESN normalizado"><div class="stat-bar-fill" style="width:${hardnessPct(item)}%;background:linear-gradient(90deg,#818cf8,#c084fc)"></div></div><span class="stat-num" style="font-size:0.68rem;color:#c084fc">${toESN(item.hardness,item.hardScale)}°</span></div>` : ''}
-      </div>
-      <div class="card-footer">
-        <span class="card-price">~€${item.price}</span>
-        ${isRubber ? `<span class="card-hardness" style="font-size:0.72rem">${item.hardness}${item.hardScale.replace(' (≈'+toESN(item.hardness,item.hardScale)+'°ESN)','')}</span>` : `<span class="card-hardness">${item.plies} · ${item.weight}g</span>`}
-        <div class="card-rating">${renderStars(rating)}</div>
-      </div>
-      ${note ? `<div class="card-note-preview">📝 ${note}</div>` : ''}
-    </div>`;
-  });
-}
-
-function typeTag(type) {
-  if (type === 'Ofensiva') return 'tag-off';
-  if (type === 'Defensiva') return 'tag-def';
-  return 'tag-all';
-}
-
-function nivelColor(nivel) {
-  if (nivel === 'Principiante') return '#4fd17a';
-  if (nivel === 'Intermedio') return '#f5c518';
-  if (nivel === 'Avanzado') return '#4f8ef7';
-  if (nivel === 'Profesional') return '#f75d5d';
-  return '#7b82a8';
-}
-
-// ─── HARDNESS NORMALISATION ───────────────────────────────────────────────────
-// Butterfly (°J) y DHS (°C) usan Shore A; fabricantes europeos (Andro, Tibhar,
-// JOOLA, Yasaka, Donic, Stiga, Victas…) usan Shore O (= °ESN).
-// Tabla de conversión empírica basada en datos de r/tabletennis, TTGearLab y
-// mediciones con durómetro (Shore A → Shore O):
-//  35→46  36→47  37→48  38→50  39→52  40→53  41→54  42→55  43→56  44→58
-// Fuente de referencia: Wolfram Demonstrations, MyTableTennis forum, TTGearLab.
-function toESN(h, scale) {
-  if (!scale || scale.includes('ESN')) return h; // ya está en ESN
-  // Shore A (°J / °C) → Shore O (°ESN)
-  const lut = {33:43,34:44,35:46,36:47,37:48,38:50,39:52,40:53,41:54,42:55,43:56,44:58,45:60};
-  return lut[h] ?? (h >= 45 ? h + 15 : h + 11);
-}
-
-function hardnessLabel(item) {
-  const esn = toESN(item.hardness, item.hardScale);
-  const orig = `${item.hardness}${item.hardScale}`;
-  if (item.hardScale && !item.hardScale.includes('ESN')) {
-    return `${orig} <span style="color:var(--text-dim);font-weight:400">≈ ${esn}°ESN</span>`;
-  }
-  return orig;
-}
-
-function hardnessPct(item) {
-  // posición en la barra: escala 38–62°ESN normalizada a 0-100%
-  const esn = toESN(item.hardness, item.hardScale);
-  return Math.min(100, Math.max(0, Math.round((esn - 38) / (62 - 38) * 100)));
-}
-
-function renderStars(n) {
-  return [1,2,3,4,5].map(i => `<span class="star ${i<=n?'':'empty'}">${i<=n?'★':'☆'}</span>`).join('');
-}
-
-// ─── COMPARE ─────────────────────────────────────────────────────────────────
-function toggleCompare(event, id) {
-  event.stopPropagation();
-  if (compareList.includes(id)) {
-    compareList = compareList.filter(x => x !== id);
-  } else {
-    if (compareList.length >= 4) { alert('Máximo 4 elementos a comparar'); return; }
-    compareList.push(id);
-  }
-  updateCompareBar();
-  // Update card highlight
-  const card = document.getElementById('card-'+id);
-  if (card) {
-    card.classList.toggle('in-compare', compareList.includes(id));
-    const btn = card.querySelector('.btn-compare');
-    if (btn) btn.classList.toggle('active', compareList.includes(id));
-  }
-}
-
-function updateCompareBar() {
-  const bar = document.getElementById('compare-bar');
-  const chips = document.getElementById('compare-chips');
-  const countEl = document.getElementById('compare-count');
-  countEl.textContent = compareList.length;
-  bar.classList.toggle('visible', compareList.length > 0);
-  const allItems = [...RUBBERS, ...BLADES];
-  chips.innerHTML = compareList.map(id => {
-    const item = allItems.find(x => x.id === id);
-    return `<div class="compare-chip">${item.brand} ${item.name}<button onclick="toggleCompare(event,'${id}')">×</button></div>`;
-  }).join('');
-}
-
-function clearCompare() {
-  compareList = [];
-  updateCompareBar();
-  applyFilters();
-}
-
-function renderCompare() {
-  const wrap = document.getElementById('compare-table-wrap');
-  const hint = document.getElementById('compare-hint');
-  if (!compareList.length) { wrap.innerHTML = ''; hint.style.display = 'block'; return; }
-  hint.style.display = 'none';
-  const allItems = [...RUBBERS, ...BLADES];
-  const items = compareList.map(id => allItems.find(x => x.id === id)).filter(Boolean);
-  const isRubbers = items[0].spin !== undefined;
-
-  const keys = isRubbers
-    ? [['Marca','brand'],['Categoría','cat'],['Tipo','type'],['Velocidad','speed'],['Spin','spin'],['Control','control'],['Dureza','hardness'],['Espesores','thickness'],['Precio (€)','price']]
-    : [['Marca','brand'],['Categoría','cat'],['Capas','plies'],['Material','material'],['Velocidad','speed'],['Control','control'],['Peso (g)','weight'],['Grosor (mm)','thickness'],['Precio (€)','price']];
-
-  const numKeys = isRubbers ? ['speed','spin','control'] : ['speed','control'];
-  const maxVals = {};
-  numKeys.forEach(k => { maxVals[k] = Math.max(...items.map(x => x[k]||0)); });
-
-  let html = `<table class="compare-table"><thead><tr><th>Parámetro</th>${items.map(i=>`<th class="prod-name-col">${i.brand}<br>${i.name}</th>`).join('')}</tr></thead><tbody>`;
-  keys.forEach(([label, key]) => {
-    html += `<tr><td>${label}</td>`;
-    items.forEach(item => {
-      const val = Array.isArray(item[key]) ? item[key].join(', ') : (item[key] ?? '—');
-      const isNum = numKeys.includes(key);
-      const isBest = isNum && item[key] === maxVals[key];
-      const barPct = isNum ? Math.round((item[key]/100)*120) : 0;
-      html += `<td class="${isBest?'best-val':''}">`;
-      if (key === 'hardness' && isRubbers) {
-        const esnVal = toESN(item.hardness, item.hardScale);
-        html += `${item.hardness}${item.hardScale}<br><span style="font-size:0.75rem;color:#c084fc">≈ ${esnVal}°ESN</span>`;
-      } else if (isNum) html += `<div class="compare-bar-cell"><div class="bar" style="width:${barPct}px;min-width:4px"></div> ${val}</div>`;
-      else html += val;
-      html += '</td>';
-    });
-    html += '</tr>';
-  });
-  // User ratings row
-  html += `<tr><td>Mi puntuación</td>${items.map(i=>`<td>${renderStars(userRatings[i.id]||0)}</td>`).join('')}</tr>`;
-  html += `<tr><td>Mis notas</td>${items.map(i=>`<td style="font-size:0.8rem;color:var(--text-dim);font-style:italic">${userNotes[i.id]||'—'}</td>`).join('')}</tr>`;
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
-}
-
-// ─── MODAL ────────────────────────────────────────────────────────────────────
-function openModal(id) {
-  const allItems = [...RUBBERS, ...BLADES];
-  const item = allItems.find(x => x.id === id);
-  if (!item) return;
-  const isRubber = !!item.spin;
-  const rating = userRatings[id] || 0;
-  const note = userNotes[id] || '';
-  tempRating = rating;
-
-  const content = document.getElementById('modal-content');
-  content.innerHTML = `
-    <div class="modal-header">
-      <div class="modal-title-area">
-        <div class="modal-brand">${item.brand}</div>
-        <h2>${item.name}</h2>
-        <div class="card-tags" style="margin-top:8px">
-          ${isRubber ? `<span class="tag ${typeTag(item.type)}">${item.type}</span><span class="tag tag-cat">${item.cat}</span>` : `<span class="tag tag-off">${item.cat}</span><span class="tag tag-mat">${item.material}</span>`}
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-
-    <div class="stat-bars-big">
-      <div class="stat-row-big"><span class="stat-label-big">Velocidad</span><div class="stat-bar-bg-big"><div class="stat-bar-fill-big fill-speed" style="width:${item.speed}%"></div></div><span class="stat-num-big">${item.speed}/100</span></div>
-      ${isRubber ? `<div class="stat-row-big"><span class="stat-label-big">Spin</span><div class="stat-bar-bg-big"><div class="stat-bar-fill-big fill-spin" style="width:${item.spin}%"></div></div><span class="stat-num-big">${item.spin}/100</span></div>` : ''}
-      <div class="stat-row-big"><span class="stat-label-big">Control</span><div class="stat-bar-bg-big"><div class="stat-bar-fill-big fill-control" style="width:${item.control}%"></div></div><span class="stat-num-big">${item.control}/100</span></div>
-      ${isRubber ? `<div class="stat-row-big"><span class="stat-label-big" style="color:#c084fc">Dureza</span><div class="stat-bar-bg-big" title="Escala normalizada 38–62°ESN"><div class="stat-bar-fill-big" style="width:${hardnessPct(item)}%;background:linear-gradient(90deg,#818cf8,#c084fc)"></div></div><span class="stat-num-big" style="color:#c084fc;font-size:0.75rem">${toESN(item.hardness,item.hardScale)}°ESN</span></div>` : ''}
-    </div>
-
-    <div class="modal-grid">
-      <div class="spec-section">
-        <h3>Especificaciones</h3>
-        <div class="spec-table">
-          ${isRubber ? `
-            <div class="spec-row"><span class="spec-key">Dureza</span><span class="spec-val">${hardnessLabel(item)}</span></div>
-            <div class="spec-row"><span class="spec-key">Espesores</span><span class="spec-val">${Array.isArray(item.thickness)?item.thickness.join(' / '):item.thickness} mm</span></div>
-            <div class="spec-row"><span class="spec-key">Colores</span><span class="spec-val">${item.color}</span></div>
-          ` : `
-            <div class="spec-row"><span class="spec-key">Capas</span><span class="spec-val">${item.plies}</span></div>
-            <div class="spec-row"><span class="spec-key">Nº capas</span><span class="spec-val">${item.layers === 5 ? '5 capas' : item.layers === 7 ? '7 capas' : item.layers}</span></div>
-            <div class="spec-row"><span class="spec-key">Material</span><span class="spec-val">${item.material}</span></div>
-            ${item.wood ? `<div class="spec-row" style="display:block;padding:8px 10px;background:var(--surface2);border-radius:6px"><span class="spec-key">🌲 Maderas</span><p style="font-size:0.8rem;color:var(--text);margin-top:4px;font-family:monospace">${item.wood}</p></div>` : ''}
-            <div class="spec-row"><span class="spec-key">Grosor</span><span class="spec-val">${item.thickness} mm</span></div>
-            <div class="spec-row"><span class="spec-key">Peso aprox.</span><span class="spec-val">${item.weight} g</span></div>
-          `}
-        </div>
-      </div>
-      <div class="spec-section">
-        <h3>Comercial</h3>
-        <div class="spec-table">
-          <div class="spec-row"><span class="spec-key">Precio aprox.</span><span class="spec-val" style="color:var(--accent3)">~€${item.price}</span></div>
-          <div class="spec-row"><span class="spec-key">Categoría</span><span class="spec-val">${isRubber ? item.type : item.cat}</span></div>
-          <div class="spec-row"><span class="spec-key">Marca</span><span class="spec-val">${item.brand}</span></div>
-          ${item.nivel ? `<div class="spec-row"><span class="spec-key">Nivel recom.</span><span class="spec-val" style="color:${nivelColor(item.nivel)}">${item.nivel}</span></div>` : ''}
-          ${item.note ? `<div class="spec-row" style="display:block;padding:8px 10px;background:var(--surface2);border-radius:6px"><span class="spec-key">📋 Info comunidad</span><p style="font-size:0.8rem;color:var(--text);margin-top:4px">${item.note}</p></div>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <div class="rating-section">
-      <h3>Mi puntuación</h3>
-      <div class="stars-input" id="stars-input">
-        ${[1,2,3,4,5].map(i => `<button class="star-btn" onclick="setTempRating(${i},'${id}')" data-v="${i}">${i<=rating?'★':'☆'}</button>`).join('')}
-      </div>
-      <h3 style="margin-bottom:8px">Mis notas</h3>
-      <textarea id="note-input" placeholder="Escribe aquí tus observaciones…">${note}</textarea>
-      <div class="modal-save-row">
-        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveUserData('${id}')">Guardar</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('modal').classList.add('open');
-}
-
-function setTempRating(val, id) {
-  tempRating = val;
-  const btns = document.querySelectorAll('#stars-input .star-btn');
-  btns.forEach(btn => {
-    const v = +btn.dataset.v;
-    btn.textContent = v <= val ? '★' : '☆';
-    btn.style.color = v <= val ? 'var(--star)' : 'var(--text-dim)';
-  });
-}
-
-function saveUserData(id) {
-  userRatings[id] = tempRating;
-  userNotes[id] = document.getElementById('note-input').value;
-  localStorage.setItem('tt_ratings', JSON.stringify(userRatings));
-  localStorage.setItem('tt_notes', JSON.stringify(userNotes));
-  closeModal();
-  applyFilters();
-}
-
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function closeModalOutside(e) { if (e.target.id === 'modal') closeModal(); }
-
-// ─── SETUPS ───────────────────────────────────────────────────────────────────
-const THICKNESS_OPTS = ['1.5','1.7','1.8','1.9','2.0','2.1','2.2','2.3','Max'];
-
-function saveSetupsToStorage() {
-  localStorage.setItem('tt_setups', JSON.stringify(setupsList));
-}
-
-function renderSetups() {
-  const grid = document.getElementById('setups-grid');
-  const empty = document.getElementById('setups-empty');
-  if (!setupsList.length) {
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-  grid.innerHTML = setupsList.map(s => {
-    const stars = renderStars(s.rating || 0);
-    const dateStr = s.date ? new Date(s.date).toLocaleDateString('es-ES') : '';
-    const badgeFH = `<span class="setup-part-badge ${s.fhColor === 'Rojo' ? 'badge-red' : 'badge-black'}">${s.fhColor}</span>`;
-    const badgeBH = `<span class="setup-part-badge ${s.bhColor === 'Rojo' ? 'badge-red' : 'badge-black'}">${s.bhColor}</span>`;
-    return `
-    <div class="setup-card">
-      <div class="setup-card-title">${s.blade || '—'}</div>
-      <div class="setup-card-date">${dateStr}</div>
-      <div class="setup-parts">
-        <div class="setup-part">
-          <span class="setup-part-label">Derecha</span>
-          <span class="setup-part-val">${s.fhRubber || '—'}</span>
-          <span style="color:var(--text-dim);font-size:0.78rem">${s.fhThickness}mm</span>
-          ${badgeFH}
-        </div>
-        <div class="setup-part">
-          <span class="setup-part-label">Revés</span>
-          <span class="setup-part-val">${s.bhRubber || '—'}</span>
-          <span style="color:var(--text-dim);font-size:0.78rem">${s.bhThickness}mm</span>
-          ${badgeBH}
-        </div>
-      </div>
-      ${s.notes ? `<div class="setup-note-preview">📝 ${s.notes}</div>` : ''}
-      <div class="setup-footer">
-        <div class="card-rating">${stars}</div>
-        <div class="setup-actions">
-          <button class="btn btn-outline btn-sm" onclick="openSetupModal('${s.id}')">Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteSetup('${s.id}')">Eliminar</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openSetupModal(id) {
-  editingSetupId = id;
-  const s = id ? setupsList.find(x => x.id === id) : null;
-  tempSetupRating = s ? (s.rating || 0) : 0;
-
-  const bladeNames = BLADES.map(b => b.name).sort();
-  const rubberNames = RUBBERS.map(r => r.name).sort();
-  const thicknessOpts = THICKNESS_OPTS.map(t => `<option value="${t}"${(s&&s.fhThickness===t)?'selected':''}>${t}</option>`).join('');
-  const thicknessOptsBH = THICKNESS_OPTS.map(t => `<option value="${t}"${(s&&s.bhThickness===t)?'selected':''}>${t}</option>`).join('');
-
-  document.getElementById('setup-modal-content').innerHTML = `
-    <div class="modal-header">
-      <div class="modal-title-area">
-        <h2>${id ? 'Editar setup' : 'Nuevo setup'}</h2>
-      </div>
-      <button class="modal-close" onclick="closeSetupModal()">✕</button>
-    </div>
-
-    <div class="setup-modal-grid">
-      <div class="form-group" style="grid-column:1/-1">
-        <label>Madera</label>
-        <input type="text" id="setup-blade" list="blade-list" placeholder="Nombre de la madera…" value="${s?s.blade:''}">
-        <datalist id="blade-list">${bladeNames.map(n=>`<option value="${n}">`).join('')}</datalist>
-      </div>
-      <div class="form-group" style="grid-column:1/-1"><hr style="border-color:var(--border);margin:4px 0"></div>
-
-      <div class="form-group">
-        <label>Goma Derecha (FH)</label>
-        <input type="text" id="setup-fh-rubber" list="rubber-list-fh" placeholder="Nombre de la goma…" value="${s?s.fhRubber:''}">
-        <datalist id="rubber-list-fh">${rubberNames.map(n=>`<option value="${n}">`).join('')}</datalist>
-      </div>
-      <div class="form-group">
-        <label>Color</label>
-        <select id="setup-fh-color">
-          <option value="Rojo" ${s&&s.fhColor==='Rojo'?'selected':''}>Rojo</option>
-          <option value="Negro" ${s&&s.fhColor==='Negro'?'selected':''}>Negro</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Grosor FH</label>
-        <select id="setup-fh-thickness">${thicknessOpts}</select>
-      </div>
-
-      <div class="form-group" style="grid-column:1/-1"><hr style="border-color:var(--border);margin:4px 0"></div>
-
-      <div class="form-group">
-        <label>Goma Revés (BH)</label>
-        <input type="text" id="setup-bh-rubber" list="rubber-list-bh" placeholder="Nombre de la goma…" value="${s?s.bhRubber:''}">
-        <datalist id="rubber-list-bh">${rubberNames.map(n=>`<option value="${n}">`).join('')}</datalist>
-      </div>
-      <div class="form-group">
-        <label>Color</label>
-        <select id="setup-bh-color">
-          <option value="Rojo" ${s&&s.bhColor==='Rojo'?'selected':''}>Rojo</option>
-          <option value="Negro" ${s&&s.bhColor==='Negro'?'selected':''}>Negro</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Grosor BH</label>
-        <select id="setup-bh-thickness">${thicknessOptsBH}</select>
-      </div>
-    </div>
-
-    <div class="rating-section">
-      <h3>Puntuación del setup</h3>
-      <div class="stars-input" id="setup-stars-input">
-        ${[1,2,3,4,5].map(i => `<button class="star-btn" onclick="setTempSetupRating(${i})" data-v="${i}" style="color:${i<=tempSetupRating?'var(--star)':'var(--text-dim)'}">${i<=tempSetupRating?'★':'☆'}</button>`).join('')}
-      </div>
-      <h3 style="margin-bottom:8px">Notas</h3>
-      <textarea id="setup-notes" placeholder="Sensaciones, contexto, torneos donde lo usaste…" style="height:90px">${s?s.notes:''}</textarea>
-    </div>
-    <div class="modal-save-row">
-      <button class="btn btn-outline" onclick="closeSetupModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveSetup()">Guardar setup</button>
-    </div>
-  `;
-  document.getElementById('setup-modal').classList.add('open');
-}
-
-function setTempSetupRating(val) {
-  tempSetupRating = val;
-  document.querySelectorAll('#setup-stars-input .star-btn').forEach(btn => {
-    const v = +btn.dataset.v;
-    btn.textContent = v <= val ? '★' : '☆';
-    btn.style.color = v <= val ? 'var(--star)' : 'var(--text-dim)';
-  });
-}
-
-function saveSetup() {
-  const setup = {
-    id: editingSetupId || ('s' + Date.now()),
-    blade: document.getElementById('setup-blade').value.trim(),
-    fhRubber: document.getElementById('setup-fh-rubber').value.trim(),
-    fhThickness: document.getElementById('setup-fh-thickness').value,
-    fhColor: document.getElementById('setup-fh-color').value,
-    bhRubber: document.getElementById('setup-bh-rubber').value.trim(),
-    bhThickness: document.getElementById('setup-bh-thickness').value,
-    bhColor: document.getElementById('setup-bh-color').value,
-    rating: tempSetupRating,
-    notes: document.getElementById('setup-notes').value.trim(),
-    date: editingSetupId ? (setupsList.find(x=>x.id===editingSetupId)||{}).date || new Date().toISOString() : new Date().toISOString()
-  };
-  if (editingSetupId) {
-    const idx = setupsList.findIndex(x => x.id === editingSetupId);
-    if (idx !== -1) setupsList[idx] = setup;
-  } else {
-    setupsList.unshift(setup);
-  }
-  saveSetupsToStorage();
-  closeSetupModal();
-  renderSetups();
-}
-
-function deleteSetup(id) {
-  if (!confirm('¿Eliminar este setup?')) return;
-  setupsList = setupsList.filter(x => x.id !== id);
-  saveSetupsToStorage();
-  renderSetups();
-}
-
-function closeSetupModal() { document.getElementById('setup-modal').classList.remove('open'); }
-function closeSetupModalOutside(e) { if (e.target.id === 'setup-modal') closeSetupModal(); }
-
-// ─── START ────────────────────────────────────────────────────────────────────
-init();
-</script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
