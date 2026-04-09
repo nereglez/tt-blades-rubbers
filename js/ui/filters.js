@@ -21,20 +21,18 @@ export function applyFilters() {
 
   let items;
   if (state.currentTab === 'rubbers') {
-    const type     = document.getElementById('filter-type').value;
-    const cat      = document.getElementById('filter-cat').value;
-    const brand    = document.getElementById('filter-brand').value;
-    const minSpeed = +document.getElementById('filter-speed').value;
-    const minHard  = +document.getElementById('filter-hard-min').value;
-    const maxHard  = +document.getElementById('filter-hard').value;
-    const nivel    = document.getElementById('filter-nivel').value;
+    const type    = document.getElementById('filter-type').value;
+    const cat     = document.getElementById('filter-cat').value;
+    const brand   = document.getElementById('filter-brand').value;
+    const minHard = +document.getElementById('filter-hard-min').value;
+    const maxHard = +document.getElementById('filter-hard').value;
+    const nivel   = document.getElementById('filter-nivel').value;
 
     items = RUBBERS.filter(r => {
       if (search && !r.name.toLowerCase().includes(search) && !r.brand.toLowerCase().includes(search)) return false;
       if (type  && r.type  !== type)  return false;
       if (cat   && r.cat   !== cat)   return false;
       if (brand && r.brand !== brand) return false;
-      if (r.speed < minSpeed) return false;
       const hardESN = toESN(r.hardness, r.hardScale);
       if (hardESN < minHard || hardESN > maxHard) return false;
       if (nivel && r.nivel !== nivel) return false;
@@ -42,19 +40,17 @@ export function applyFilters() {
       return true;
     });
   } else {
-    const cat      = document.getElementById('filter-blade-cat').value;
-    const brand    = document.getElementById('filter-blade-brand').value;
-    const mat      = document.getElementById('filter-material').value;
-    const minSpeed = +document.getElementById('filter-blade-speed').value;
-    const nivel    = document.getElementById('filter-blade-nivel').value;
+    const cat   = document.getElementById('filter-blade-cat').value;
+    const brand = document.getElementById('filter-blade-brand').value;
+    const mat   = document.getElementById('filter-material').value;
+    const nivel = document.getElementById('filter-blade-nivel').value;
 
     items = BLADES.filter(b => {
       if (search && !b.name.toLowerCase().includes(search) && !b.brand.toLowerCase().includes(search)) return false;
-      if (cat   && b.cat   !== cat)              return false;
-      if (brand && b.brand !== brand)            return false;
-      if (mat   && !b.material.includes(mat))    return false;
-      if (b.speed < minSpeed)                    return false;
-      if (nivel && b.nivel !== nivel)            return false;
+      if (cat   && b.cat   !== cat)           return false;
+      if (brand && b.brand !== brand)         return false;
+      if (mat   && !b.material.includes(mat)) return false;
+      if (nivel && b.nivel !== nivel)         return false;
       if (state.showOnlyRated && !state.userRatings[b.id]) return false;
       return true;
     });
@@ -80,17 +76,15 @@ export function resetFilters() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  document.getElementById('filter-speed').value      = 0; document.getElementById('spd-val').textContent      = '0';
-  document.getElementById('filter-hard-min').value   = 25; document.getElementById('hrd-min-val').textContent = '25';
-  document.getElementById('filter-hard').value       = 65; document.getElementById('hrd-val').textContent     = '65';
-  document.getElementById('filter-blade-speed').value = 0; document.getElementById('bspd-val').textContent    = '0';
+  document.getElementById('filter-hard-min').value = 25; document.getElementById('hrd-min-val').textContent = '25';
+  document.getElementById('filter-hard').value     = 65; document.getElementById('hrd-val').textContent     = '65';
+  document.getElementById('filter-rated').checked  = false;
+  state.showOnlyRated = false;
   applyFilters();
 }
 
 export function toggleRated() {
-  state.showOnlyRated = !state.showOnlyRated;
-  const btn = document.getElementById('rated-btn');
-  btn.textContent    = 'Mostrar todas';
-  btn.style.borderColor = state.showOnlyRated ? 'var(--star)' : '';
+  const checkbox = document.getElementById('filter-rated');
+  state.showOnlyRated = checkbox.checked;
   applyFilters();
 }

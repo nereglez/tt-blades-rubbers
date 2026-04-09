@@ -49,12 +49,6 @@
       <select id="filter-brand" onchange="applyFilters()">
         <option value="">Todas</option>
       </select>
-      <label>Velocidad mínima</label>
-      <div class="range-row">
-        <input type="range" id="filter-speed" min="0" max="100" value="0"
-               oninput="document.getElementById('spd-val').textContent=this.value;applyFilters()">
-        <span class="range-val" id="spd-val">0</span>
-      </div>
       <label>Dureza mínima (°ESN)</label>
       <div class="range-row">
         <input type="range" id="filter-hard-min" min="25" max="65" value="25"
@@ -104,12 +98,6 @@
         <option value="Fibra de vidrio">Fibra de vidrio</option>
         <option value="Hinoki">Hinoki puro</option>
       </select>
-      <label>Velocidad mínima</label>
-      <div class="range-row">
-        <input type="range" id="filter-blade-speed" min="0" max="100" value="0"
-               oninput="document.getElementById('bspd-val').textContent=this.value;applyFilters()">
-        <span class="range-val" id="bspd-val">0</span>
-      </div>
       <label>Nivel recomendado</label>
       <select id="filter-blade-nivel" onchange="applyFilters()">
         <option value="">Todos</option>
@@ -124,8 +112,10 @@
       <button class="btn btn-outline btn-sm" onclick="resetFilters()">Limpiar filtros</button>
     </div>
     <div class="sidebar-section" style="margin-top:auto;">
-      <label style="color:var(--accent3)">⭐ Solo mis puntuadas</label>
-      <button class="btn btn-outline btn-sm" onclick="toggleRated()" id="rated-btn">Mostrar todas</button>
+      <label class="checkbox-label" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+        <input type="checkbox" id="filter-rated" onchange="toggleRated()" style="width:1.1rem;height:1.1rem;accent-color:var(--star);">
+        <span style="color:var(--star)">⭐ Solo mis puntuadas</span>
+      </label>
     </div>
   </aside>
 
