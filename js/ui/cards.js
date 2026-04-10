@@ -65,7 +65,7 @@ export function renderGrid(items) {
       <div class="card-footer">
         <span class="card-price">~€${item.price}</span>
         ${isRubber
-          ? `<span class="card-hardness" style="font-size:0.72rem">${item.hardness}${item.hardScale.replace(' (≈' + toESN(item.hardness, item.hardScale) + '°ESN)', '')}</span>`
+          ? `<span class="card-hardness" style="font-size:0.72rem">${item.hardness}${item.hardScale || ''}</span>`
           : `<span class="card-hardness">${item.plies} · ${item.weight}g</span>`
         }
         <div class="card-rating">${renderStars(rating)}</div>
