@@ -49,6 +49,22 @@ async function init() {
   state.userNotes   = storage.getNotes();
   state.setupsList  = storage.getSetups();
 
+  // Event delegation para el grid (evita 100+ listeners individuales)
+  document.getElementById('grid').addEventListener('click', (e) => {
+    // Click en botón comparar
+    const compareBtn = e.target.closest('[data-compare]');
+    if (compareBtn) {
+      e.stopPropagation();
+      toggleCompare(e, compareBtn.dataset.compare);
+      return;
+    }
+    // Click en card → abrir modal
+    const card = e.target.closest('.card[data-id]');
+    if (card) {
+      openModal(card.dataset.id);
+    }
+  });
+
   populateBrandFilters();
   applyFilters();
 }

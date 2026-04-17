@@ -1,5 +1,5 @@
-import { RUBBERS } from '../data/rubbers.js';
-import { BLADES }  from '../data/blades.js';
+import { RUBBERS } from '../data/rubbers-slim.js';
+import { BLADES }  from '../data/blades-slim.js';
 import { state }   from '../state.js';
 import { toESN }   from '../utils.js';
 import { renderGrid } from './cards.js';

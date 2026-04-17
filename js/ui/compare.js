@@ -1,11 +1,11 @@
-import { RUBBERS } from '../data/rubbers.js';
-import { BLADES }  from '../data/blades.js';
+import { RUBBERS } from '../data/rubbers-slim.js';
+import { BLADES }  from '../data/blades-slim.js';
 import { state }   from '../state.js';
 import { toESN, renderStars } from '../utils.js';
 import { applyFilters } from './filters.js';
 
 export function toggleCompare(event, id) {
-  event.stopPropagation();
+  if (event) event.stopPropagation();
   if (state.compareList.includes(id)) {
     state.compareList = state.compareList.filter(x => x !== id);
   } else {
@@ -13,7 +13,7 @@ export function toggleCompare(event, id) {
     state.compareList.push(id);
   }
   updateCompareBar();
-  const card = document.getElementById('card-' + id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
   if (card) {
     card.classList.toggle('in-compare', state.compareList.includes(id));
     const btn = card.querySelector('.btn-compare');

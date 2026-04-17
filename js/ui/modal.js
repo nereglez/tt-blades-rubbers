@@ -1,12 +1,23 @@
-import { RUBBERS } from '../data/rubbers.js';
-import { BLADES }  from '../data/blades.js';
 import { state }   from '../state.js';
 import * as storage from '../services/storage.js';
 import { toESN, hardnessPct, hardnessLabel, renderStars, typeTag, nivelColor } from '../utils.js';
 import { applyFilters } from './filters.js';
 
-export function openModal(id) {
-  const allItems = [...RUBBERS, ...BLADES];
+// Cache para datos completos (lazy loaded)
+let fullData = null;
+
+async function loadFullData() {
+  if (fullData) return fullData;
+  const [rubbersModule, bladesModule] = await Promise.all([
+    import('../data/rubbers.js'),
+    import('../data/blades.js')
+  ]);
+  fullData = [...rubbersModule.RUBBERS, ...bladesModule.BLADES];
+  return fullData;
+}
+
+export async function openModal(id) {
+  const allItems = await loadFullData();
   const item = allItems.find(x => x.id === id);
   if (!item) return;
 

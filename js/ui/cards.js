@@ -3,26 +3,26 @@ import { toESN, hardnessPct, renderStars, typeTag, nivelColor } from '../utils.j
 
 export function renderGrid(items) {
   const grid = document.getElementById('grid');
-  grid.innerHTML = '';
   if (!items.length) {
     grid.innerHTML = '<div class="no-results"><span>🏓</span>Sin resultados con estos filtros</div>';
     return;
   }
   const isRubber = state.currentTab === 'rubbers';
-  items.forEach(item => {
+
+  // Usar map().join() en lugar de innerHTML += para evitar O(n²) reescrituras del DOM
+  const html = items.map(item => {
     const inCompare = state.compareList.includes(item.id);
     const rating    = state.userRatings[item.id] || 0;
     const note      = state.userNotes[item.id]   || '';
 
-    grid.innerHTML += `
-    <div class="card ${inCompare ? 'in-compare' : ''}" id="card-${item.id}" onclick="openModal('${item.id}')">
+    return `
+    <div class="card ${inCompare ? 'in-compare' : ''}" data-id="${item.id}">
       <div class="card-top">
         <div>
           <div class="card-brand">${item.brand}</div>
           <div class="card-name">${item.name}</div>
         </div>
-        <button class="btn btn-compare btn-sm ${inCompare ? 'active' : ''}"
-                onclick="toggleCompare(event,'${item.id}')">⊕</button>
+        <button class="btn btn-compare btn-sm ${inCompare ? 'active' : ''}" data-compare="${item.id}">⊕</button>
       </div>
       <div class="card-tags">
         ${isRubber
@@ -72,5 +72,7 @@ export function renderGrid(items) {
       </div>
       ${note ? `<div class="card-note-preview">📝 ${note}</div>` : ''}
     </div>`;
-  });
+  }).join('');
+
+  grid.innerHTML = html;
 }
