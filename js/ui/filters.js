@@ -4,13 +4,22 @@ import { state }   from '../state.js';
 import { toESN }   from '../utils.js';
 import { renderGrid } from './cards.js';
 
+function createBrandChips(container, brands) {
+  brands.forEach(brand => {
+    const btn = document.createElement('button');
+    btn.className = 'brand-chip';
+    btn.textContent = brand;
+    btn.dataset.brand = brand;
+    btn.onclick = () => { btn.classList.toggle('active'); applyFilters(); };
+    container.appendChild(btn);
+  });
+}
+
 export function populateBrandFilters() {
   const rubberBrands = [...new Set(RUBBERS.map(r => r.brand))].sort();
   const bladeBrands  = [...new Set(BLADES.map(b => b.brand))].sort();
-  const rSel = document.getElementById('filter-brand');
-  const bSel = document.getElementById('filter-blade-brand');
-  rubberBrands.forEach(b => { rSel.innerHTML += `<option>${b}</option>`; });
-  bladeBrands.forEach(b  => { bSel.innerHTML += `<option>${b}</option>`; });
+  createBrandChips(document.getElementById('filter-brand'), rubberBrands);
+  createBrandChips(document.getElementById('filter-blade-brand'), bladeBrands);
 }
 
 export function applyFilters() {
@@ -23,16 +32,16 @@ export function applyFilters() {
   if (state.currentTab === 'rubbers') {
     const type    = document.getElementById('filter-type').value;
     const cat     = document.getElementById('filter-cat').value;
-    const brand   = document.getElementById('filter-brand').value;
+    const brands  = [...document.querySelectorAll('#filter-brand .brand-chip.active')].map(el => el.dataset.brand);
     const minHard = +document.getElementById('filter-hard-min').value;
     const maxHard = +document.getElementById('filter-hard').value;
     const nivel   = document.getElementById('filter-nivel').value;
 
     items = RUBBERS.filter(r => {
       if (search && !r.name.toLowerCase().includes(search) && !r.brand.toLowerCase().includes(search)) return false;
-      if (type  && r.type  !== type)  return false;
-      if (cat   && r.cat   !== cat)   return false;
-      if (brand && r.brand !== brand) return false;
+      if (type  && r.type !== type) return false;
+      if (cat   && r.cat  !== cat)  return false;
+      if (brands.length && !brands.includes(r.brand)) return false;
       const hardESN = toESN(r.hardness, r.hardScale);
       if (hardESN < minHard || hardESN > maxHard) return false;
       if (nivel && r.nivel !== nivel) return false;
@@ -40,17 +49,17 @@ export function applyFilters() {
       return true;
     });
   } else {
-    const cat   = document.getElementById('filter-blade-cat').value;
-    const brand = document.getElementById('filter-blade-brand').value;
-    const mat   = document.getElementById('filter-material').value;
-    const nivel = document.getElementById('filter-blade-nivel').value;
+    const cat    = document.getElementById('filter-blade-cat').value;
+    const brands = [...document.querySelectorAll('#filter-blade-brand .brand-chip.active')].map(el => el.dataset.brand);
+    const mat    = document.getElementById('filter-material').value;
+    const nivel  = document.getElementById('filter-blade-nivel').value;
 
     items = BLADES.filter(b => {
       if (search && !b.name.toLowerCase().includes(search) && !b.brand.toLowerCase().includes(search)) return false;
-      if (cat   && b.cat   !== cat)           return false;
-      if (brand && b.brand !== brand)         return false;
-      if (mat   && !b.material.includes(mat)) return false;
-      if (nivel && b.nivel !== nivel)         return false;
+      if (cat    && b.cat !== cat)              return false;
+      if (brands.length && !brands.includes(b.brand)) return false;
+      if (mat    && !b.material.includes(mat))  return false;
+      if (nivel  && b.nivel !== nivel)           return false;
       if (state.showOnlyRated && !state.userRatings[b.id]) return false;
       return true;
     });
@@ -71,11 +80,11 @@ export function applyFilters() {
 
 export function resetFilters() {
   document.getElementById('search').value = '';
-  ['filter-type','filter-cat','filter-brand','filter-blade-cat','filter-blade-brand',
-   'filter-material','filter-nivel','filter-blade-nivel'].forEach(id => {
+  ['filter-type','filter-cat','filter-blade-cat','filter-material','filter-nivel','filter-blade-nivel'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  document.querySelectorAll('.brand-chip.active').forEach(el => el.classList.remove('active'));
   document.getElementById('filter-hard-min').value = 25; document.getElementById('hrd-min-val').textContent = '25';
   document.getElementById('filter-hard').value     = 65; document.getElementById('hrd-val').textContent     = '65';
   document.getElementById('filter-rated').checked  = false;

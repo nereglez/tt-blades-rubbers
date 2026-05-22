@@ -66,9 +66,7 @@
         <option value="Anti">Anti</option>
       </select>
       <label>Marca</label>
-      <select id="filter-brand" onchange="applyFilters()">
-        <option value="">Todas</option>
-      </select>
+      <div id="filter-brand" class="brand-chips"></div>
       <label>Dureza mínima (°ESN)</label>
       <div class="range-row">
         <input type="range" id="filter-hard-min" min="25" max="65" value="25"
@@ -104,9 +102,7 @@
         <option value="DEF">DEF</option>
       </select>
       <label>Marca</label>
-      <select id="filter-blade-brand" onchange="applyFilters()">
-        <option value="">Todas</option>
-      </select>
+      <div id="filter-blade-brand" class="brand-chips"></div>
       <label>Material</label>
       <select id="filter-material" onchange="applyFilters()">
         <option value="">Todos</option>
