@@ -1,6 +1,6 @@
 import { state }   from '../state.js';
 import * as storage from '../services/storage.js';
-import { toESN, hardnessPct, hardnessLabel, renderStars, typeTag, nivelColor } from '../utils.js';
+import { toESN, hardnessPct, hardnessLabel, renderStars, typeTag, nivelColor, activationCurveSVG } from '../utils.js';
 import { applyFilters } from './filters.js';
 
 // Cache para datos completos (lazy loaded)
@@ -107,6 +107,16 @@ export async function openModal(id) {
         </div>
       </div>
     </div>
+
+    ${isRubber && item.activationWindow ? `
+    <div class="spec-section" style="margin-top:16px">
+      <h3>Ventana de activación <span style="font-size:0.7rem;color:var(--text-dim);font-weight:400">(estimación piloto Andro)</span></h3>
+      ${activationCurveSVG(item)}
+      <p style="font-size:0.78rem;color:var(--text-dim);margin-top:6px">
+        A baja velocidad de impacto (zona de saque), esta goma rinde ${item.activationWindow.center > 55 ? 'por debajo de su zona óptima — requiere más precisión y aceleración en el gesto para sacar con efecto' : 'dentro o cerca de su zona óptima — es más fácil generar efecto al sacar'}.
+        ${item.aslReal ? `Rango verificado en andro.de (ASL): ${item.aslReal[0]}-${item.aslReal[1]}.` : 'Estimación calculada a partir de dureza y elasticidad, sin dato oficial de Andro para este modelo.'}
+      </p>
+    </div>` : ''}
 
     <div class="rating-section">
       <h3>Mi puntuación</h3>

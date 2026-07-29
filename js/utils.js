@@ -51,3 +51,47 @@ export function nivelColor(nivel) {
   if (nivel === 'Profesional')  return '#f75d5d';
   return '#7b82a8';
 }
+
+// ─── VENTANA DE ACTIVACIÓN (piloto Andro) ─────────────────────────────────────
+// Curva gaussiana simplificada: y = exp(-0.5 * ((x-center)/sigma)^2)
+// center/width vienen en escala 0-100 (posición relativa de velocidad de impacto).
+export function activationCurveSVG(item) {
+  if (!item.activationWindow) return '';
+  const { center, width } = item.activationWindow;
+  const sigma = Math.max(8, width / 2.2);
+  const W = 460, H = 150, padL = 10, padR = 10, padT = 14, padB = 26;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const toX = pct => padL + (pct / 100) * plotW;
+  const pts = [];
+  for (let x = 0; x <= 100; x += 2) {
+    const y = Math.exp(-0.5 * Math.pow((x - center) / sigma, 2));
+    pts.push(`${toX(x)},${padT + plotH * (1 - y)}`);
+  }
+  const path = 'M ' + pts.join(' L ');
+
+  // Franja de saque: velocidades de impacto bajas (0-20% de la escala)
+  const serveZoneW = toX(20) - padL;
+
+  // Si tenemos ASL real, lo mostramos como banda sombreada aparte (dato oficial)
+  let aslBand = '';
+  if (item.aslReal) {
+    const HARD_MIN = 37, HARD_MAX = 55;
+    // el propio aslReal ya está en unidades ASL (0-12 aprox); lo proyectamos sobre el eje 0-100
+    const aslMinPos = toX(Math.max(0, Math.min(100, (item.aslReal[0] / 12) * 100)));
+    const aslMaxPos = toX(Math.max(0, Math.min(100, (item.aslReal[1] / 12) * 100)));
+    aslBand = `<rect x="${aslMinPos}" y="${padT}" width="${Math.max(2, aslMaxPos - aslMinPos)}" height="${plotH}" fill="#4fd17a" opacity="0.18"/>
+      <text x="${(aslMinPos+aslMaxPos)/2}" y="${padT - 3}" text-anchor="middle" font-size="9" fill="#4fd17a">ASL real ${item.aslReal[0]}-${item.aslReal[1]}</text>`;
+  }
+
+  return `
+  <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block">
+    <rect x="${padL}" y="${padT}" width="${serveZoneW}" height="${plotH}" fill="#f75d5d" opacity="0.12"/>
+    <text x="${padL + serveZoneW/2}" y="${H - padB + 14}" text-anchor="middle" font-size="9" fill="#f5807a">saque</text>
+    ${aslBand}
+    <line x1="${padL}" y1="${padT+plotH}" x2="${W-padR}" y2="${padT+plotH}" stroke="var(--border)" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    <text x="${padL}" y="${H-4}" font-size="9" fill="var(--text-dim)">lenta</text>
+    <text x="${W-padR}" y="${H-4}" text-anchor="end" font-size="9" fill="var(--text-dim)">rápida</text>
+    <text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="9" fill="var(--text-dim)">velocidad de impacto</text>
+  </svg>`;
+}
