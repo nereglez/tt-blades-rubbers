@@ -52,9 +52,10 @@ export function nivelColor(nivel) {
   return '#7b82a8';
 }
 
-// ─── VENTANA DE ACTIVACIÓN (piloto Andro) ─────────────────────────────────────
+// ─── VENTANA DE ACTIVACIÓN ────────────────────────────────────────────────────
 // Curva gaussiana simplificada: y = exp(-0.5 * ((x-center)/sigma)^2)
 // center/width vienen en escala 0-100 (posición relativa de velocidad de impacto).
+// Ver la cabecera de data/rubbers.js para cómo se derivan center/width.
 export function activationCurveSVG(item) {
   if (!item.activationWindow) return '';
   const { center, width } = item.activationWindow;
@@ -75,7 +76,6 @@ export function activationCurveSVG(item) {
   // Si tenemos ASL real, lo mostramos como banda sombreada aparte (dato oficial)
   let aslBand = '';
   if (item.aslReal) {
-    const HARD_MIN = 37, HARD_MAX = 55;
     // el propio aslReal ya está en unidades ASL (0-12 aprox); lo proyectamos sobre el eje 0-100
     const aslMinPos = toX(Math.max(0, Math.min(100, (item.aslReal[0] / 12) * 100)));
     const aslMaxPos = toX(Math.max(0, Math.min(100, (item.aslReal[1] / 12) * 100)));
