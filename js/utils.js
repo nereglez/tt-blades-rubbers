@@ -81,16 +81,6 @@ export function hardnessLabel(item) {
   return orig;
 }
 
-// Posición en la barra: escala 25–60°ESN normalizada a 0–100%. Es el rango real del
-// catálogo (de los antitopspin/picos más blandos a las esponjas chinas más duras);
-// con el rango anterior (38–62) todas las gomas blandas se aplastaban contra el 0%.
-export const HARD_BAR_MIN = 25, HARD_BAR_MAX = 60;
-export function hardnessPct(item) {
-  const esn = toESN(item.hardness, item.hardScale);
-  const pct = (esn - HARD_BAR_MIN) / (HARD_BAR_MAX - HARD_BAR_MIN) * 100;
-  return Math.min(100, Math.max(0, Math.round(pct)));
-}
-
 // ─── HELPERS UI ───────────────────────────────────────────────────────────────
 export function renderStars(n) {
   return [1,2,3,4,5].map(i =>
