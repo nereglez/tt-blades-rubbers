@@ -25,7 +25,9 @@
  */
 export const RUBBERS = [
   // ── BUTTERFLY ──────────────────────────────────────────────────────────────
-  // Dureza en escala japonesa (°J). Tenergy: 36°J ≈ 47°ESN. Dignics: 40°J ≈ 50°ESN, 44°J ≈ 54°ESN
+  // Dureza en la escala propietaria de Butterfly (°J). La equivalencia a °ESN sale de la
+  // tabla de utils.js (toESN): Tenergy FX 32°J ≈ 40, Tenergy 36°J ≈ 47, Tenergy 05 Hard
+  // 43°J ≈ 56, Dignics 05/64/80 40°J ≈ 51, Dignics 09C 44°J ≈ 57.
   {id:'r001', brand:'Butterfly', name:'Tenergy 05', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:92, spin:91, control:57, hardness:36, hardScale:'°J', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Estándar no-tácky de la industria durante 15 años. Esponja Spring Sponge original. Muy popular en EHF/WTT.'},
   {id:'r002', brand:'Butterfly', name:'Tenergy 05 Hard', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:93, spin:91, control:52, hardness:43, hardScale:'°J', thickness:['1.9','2.1','Max'], price:65, color:'red/black', note:'Versión más dura del T05. Trayectoria más plana, más directa. Requiere técnica consolidada.'},
   {id:'r003', brand:'Butterfly', name:'Tenergy 64', type:'Ofensiva', cat:'Tensor', nivel:'Avanzado', speed:95, spin:83, control:54, hardness:36, hardScale:'°J', thickness:['1.7','1.9','2.1','Max'], price:65, color:'red/black', note:'Máxima velocidad de la serie Tenergy. Poca topsheet friction — ideal para golpes planos y contraataques.'},

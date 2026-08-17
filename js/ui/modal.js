@@ -1,6 +1,6 @@
 import { state }   from '../state.js';
 import * as storage from '../services/storage.js';
-import { toESN, hardnessPct, hardnessLabel, renderStars, typeTag, nivelColor, activationCurveSVG } from '../utils.js';
+import { toESN, hardnessPct, hardnessLabel, renderStars, typeTag, nivelColor, activationCurveSVG, HARD_BAR_MIN, HARD_BAR_MAX } from '../utils.js';
 import { applyFilters } from './filters.js';
 
 // Cache para datos completos (lazy loaded)
@@ -63,7 +63,7 @@ export async function openModal(id) {
       ${isRubber ? `
       <div class="stat-row-big">
         <span class="stat-label-big" style="color:#c084fc">Dureza</span>
-        <div class="stat-bar-bg-big" title="Escala normalizada 38–62°ESN">
+        <div class="stat-bar-bg-big" title="Escala normalizada ${HARD_BAR_MIN}–${HARD_BAR_MAX}°ESN">
           <div class="stat-bar-fill-big" style="width:${hardnessPct(item)}%;background:linear-gradient(90deg,#818cf8,#c084fc)"></div>
         </div>
         <span class="stat-num-big" style="color:#c084fc;font-size:0.75rem">${toESN(item.hardness, item.hardScale)}°ESN</span>
