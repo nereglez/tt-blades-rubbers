@@ -69,6 +69,7 @@ export async function openModal(id) {
           ${isRubber ? `
             <div class="spec-row"><span class="spec-key">Dureza</span><span class="spec-val">${hardnessLabel(item)}</span></div>
             <div class="spec-row"><span class="spec-key">Espesores</span><span class="spec-val">${Array.isArray(item.thickness) ? item.thickness.join(' / ') : item.thickness} mm</span></div>
+            ${item.weight ? `<div class="spec-row"><span class="spec-key">Peso hoja</span><span class="spec-val" title="Hoja sin cortar, espesor máximo. Sobre la pala pesa ~20-25g menos.">${item.weight} g <span style="color:var(--text-dim);font-weight:400">sin cortar</span></span></div>` : ''}
             <div class="spec-row"><span class="spec-key">Colores</span><span class="spec-val">${item.color}</span></div>
           ` : `
             <div class="spec-row"><span class="spec-key">Capas</span><span class="spec-val">${item.plies}</span></div>

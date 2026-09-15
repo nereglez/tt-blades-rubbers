@@ -7,7 +7,7 @@ import { BLADES } from '../js/data/blades.js';
 import { writeFileSync } from 'fs';
 
 // Campos a mantener para la vista de lista/filtros/comparar
-const RUBBER_FIELDS = ['id', 'brand', 'name', 'type', 'cat', 'nivel', 'speed', 'spin', 'control', 'hardness', 'hardScale', 'thickness', 'price'];
+const RUBBER_FIELDS = ['id', 'brand', 'name', 'type', 'cat', 'nivel', 'speed', 'spin', 'control', 'hardness', 'hardScale', 'thickness', 'weight', 'price'];
 const BLADE_FIELDS = ['id', 'brand', 'name', 'cat', 'material', 'nivel', 'speed', 'control', 'plies', 'layers', 'weight', 'thickness', 'price'];
 
 function slim(items, fields) {

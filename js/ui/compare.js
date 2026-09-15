@@ -54,7 +54,8 @@ export function renderCompare() {
 
   const keys = isRubbers
     ? [['Marca','brand'],['Categoría','cat'],['Tipo','type'],['Velocidad','speed'],['Spin','spin'],
-       ['Control','control'],['Dureza','hardness'],['Espesores','thickness'],['Precio (€)','price']]
+       ['Control','control'],['Dureza','hardness'],['Espesores','thickness'],
+       ['Peso hoja (g)','weight'],['Precio (€)','price']]
     : [['Marca','brand'],['Categoría','cat'],['Capas','plies'],['Material','material'],
        ['Velocidad','speed'],['Control','control'],['Peso (g)','weight'],['Grosor (mm)','thickness'],['Precio (€)','price']];
 
