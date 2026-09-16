@@ -47,6 +47,7 @@ async function init() {
   await storage.hydrate();
   state.userRatings = storage.getRatings();
   state.userNotes   = storage.getNotes();
+  state.userWeights = storage.getWeights();
   state.setupsList  = storage.getSetups();
 
   // Event delegation para el grid (evita 100+ listeners individuales)

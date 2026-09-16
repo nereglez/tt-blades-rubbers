@@ -138,6 +138,11 @@ input[type=range] { flex: 1; accent-color: var(--accent); }
 .star-btn:hover { transform: scale(1.2); }
 textarea { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: var(--radius); font-size: 0.9rem; width: 100%; height: 90px; resize: vertical; outline: none; font-family: inherit; }
 textarea:focus { border-color: var(--accent); }
+.weight-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+#weight-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: var(--radius); font-size: 0.9rem; width: 100px; outline: none; font-family: inherit; }
+#weight-input:focus { border-color: var(--accent); }
+.weight-unit { color: var(--text-dim); font-size: 0.9rem; margin-left: -4px; }
+.weight-hint { font-size: 0.75rem; color: var(--text-dim); flex: 1; min-width: 180px; }
 .modal-save-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
 
 /* COMPARE VIEW */

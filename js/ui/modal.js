@@ -24,6 +24,7 @@ export async function openModal(id) {
   const isRubber = !!item.spin;
   const rating   = state.userRatings[id] || 0;
   const note     = state.userNotes[id]   || '';
+  const userWeight = state.userWeights[id] || '';
   state.tempRating = rating;
 
   document.getElementById('modal-content').innerHTML = `
@@ -70,6 +71,7 @@ export async function openModal(id) {
             <div class="spec-row"><span class="spec-key">Dureza</span><span class="spec-val">${hardnessLabel(item)}</span></div>
             <div class="spec-row"><span class="spec-key">Espesores</span><span class="spec-val">${Array.isArray(item.thickness) ? item.thickness.join(' / ') : item.thickness} mm</span></div>
             ${item.weight ? `<div class="spec-row"><span class="spec-key">Peso hoja</span><span class="spec-val" title="Hoja sin cortar, espesor máximo. Sobre la pala pesa ~20-25g menos.">${item.weight} g <span style="color:var(--text-dim);font-weight:400">sin cortar</span></span></div>` : ''}
+            ${userWeight ? `<div class="spec-row"><span class="spec-key">⚖️ Mi peso</span><span class="spec-val" style="color:var(--accent3)">${userWeight} g</span></div>` : ''}
             <div class="spec-row"><span class="spec-key">Colores</span><span class="spec-val">${item.color}</span></div>
           ` : `
             <div class="spec-row"><span class="spec-key">Capas</span><span class="spec-val">${item.plies}</span></div>
@@ -82,6 +84,7 @@ export async function openModal(id) {
             </div>` : ''}
             <div class="spec-row"><span class="spec-key">Grosor</span><span class="spec-val">${item.thickness} mm</span></div>
             <div class="spec-row"><span class="spec-key">Peso aprox.</span><span class="spec-val">${item.weight} g</span></div>
+            ${userWeight ? `<div class="spec-row"><span class="spec-key">⚖️ Mi peso</span><span class="spec-val" style="color:var(--accent3)">${userWeight} g</span></div>` : ''}
           `}
         </div>
       </div>
@@ -118,6 +121,16 @@ export async function openModal(id) {
           `<button class="star-btn" onclick="setTempRating(${i},'${id}')" data-v="${i}">${i<=rating?'★':'☆'}</button>`
         ).join('')}
       </div>
+      <h3 style="margin-bottom:8px">Mi peso medido</h3>
+      <div class="weight-input-row">
+        <input type="number" id="weight-input" min="1" max="200" step="0.1"
+               placeholder="—" value="${userWeight}">
+        <span class="weight-unit">g</span>
+        <span class="weight-hint">${isRubber
+          ? 'Lo que marque tu báscula. Anota si la pesaste cortada o sin cortar en las notas.'
+          : 'Peso real de tu madera (el del catálogo es aproximado).'}</span>
+      </div>
+
       <h3 style="margin-bottom:8px">Mis notas</h3>
       <textarea id="note-input" placeholder="Escribe aquí tus observaciones…">${note}</textarea>
       <div class="modal-save-row">
@@ -143,6 +156,11 @@ export async function saveUserData(id) {
   state.userNotes[id]   = document.getElementById('note-input').value;
   await storage.setRating(id, state.tempRating);
   await storage.setNote(id, state.userNotes[id]);
+
+  // El peso lo normaliza y valida storage.setWeight; dejar el campo vacío lo borra
+  await storage.setWeight(id, document.getElementById('weight-input').value);
+  state.userWeights = storage.getWeights();
+
   closeModal();
   applyFilters();
 }

@@ -93,6 +93,7 @@ export function renderCompare() {
     html += '</tr>';
   });
 
+  html += `<tr><td>⚖️ Mi peso (g)</td>${items.map(i => `<td>${state.userWeights[i.id] ?? '—'}</td>`).join('')}</tr>`;
   html += `<tr><td>Mi puntuación</td>${items.map(i => `<td>${renderStars(state.userRatings[i.id] || 0)}</td>`).join('')}</tr>`;
   html += `<tr><td>Mis notas</td>${items.map(i => `<td style="font-size:0.8rem;color:var(--text-dim);font-style:italic">${state.userNotes[i.id] || '—'}</td>`).join('')}</tr>`;
   html += '</tbody></table>';

@@ -14,5 +14,6 @@ export const state = {
   // Datos de usuario — se hidratan desde storage en init()
   userRatings: {},
   userNotes: {},
+  userWeights: {},   // peso medido por el usuario, en gramos, por id de item
   setupsList: [],
 };
